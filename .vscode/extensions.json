@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "arcanis.vscode-zipfs",
+    "dbaeumer.vscode-eslint",
+    "redhat.vscode-yaml",
+    "dbaeumer.vscode-eslint",
+    "graphql.vscode-graphql-syntax",
+    "esbenp.prettier-vscode",
+    "gruntfuggly.todo-tree",
+    "christian-kohler.npm-intellisense",
+    "yzhang.markdown-all-in-one",
+    "zainchen.json"
+  ]
+}
