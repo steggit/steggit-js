@@ -1,3 +1,4 @@
+import type { User } from '@steggit/types';
 import {
   decryptMessage,
   encryptMessage,
@@ -9,7 +10,6 @@ import {
   stringifyEncryptedMessage,
   parseEncryptedMessage,
 } from '../lib/crypto';
-import type { User } from '../types/user';
 
 const mockUserOne: User = {
   id: '1',

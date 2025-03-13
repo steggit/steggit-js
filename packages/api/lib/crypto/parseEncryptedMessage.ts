@@ -1,5 +1,5 @@
+import type { EncryptedMessage } from '@steggit/types';
 import { DEFAULT_IV_LENGTH, DEFAULT_KEY_LENGTH } from '.';
-import type { EncryptedMessage } from '../../types/crypto';
 
 export default function parseEncryptedMessage(
   stringifiedMessage: string,

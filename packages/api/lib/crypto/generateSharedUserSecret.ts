@@ -1,4 +1,4 @@
-import { type User } from '../../types/user';
+import type { User } from '@steggit/types';
 
 export default function generateSharedUserSecret(users: User[]) {
   return users

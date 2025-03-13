@@ -1,4 +1,4 @@
-import type { User } from '../../types/user';
+import type { User } from '@steggit/types';
 import {
   binaryToInvisible,
   markerAlias,
@@ -9,9 +9,9 @@ import {
   zipStrings,
 } from '../../lib/string';
 import {
-  generateSharedUserSecret,
   encryptMessage,
   generateEncryptionKey,
+  generateSharedUserSecret,
   stringifyEncryptedMessage,
 } from '../../lib/crypto';
 

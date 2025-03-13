@@ -1,0 +1,18 @@
+{
+  "name": "@steggit/types",
+  "version": "1.0.0",
+  "description": "Global types used across the steggit client and server",
+  "main": "",
+  "types": "index.d.ts",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/james-cohen/steggit.git"
+  },
+  "author": "james-cohen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/james-cohen/steggit/issues"
+  },
+  "homepage": "https://github.com/james-cohen/steggit/pkg/types#readme"
+}

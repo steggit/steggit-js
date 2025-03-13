@@ -1,5 +1,5 @@
 import { createDecipheriv } from 'node:crypto';
-import type { EncryptedMessage } from '../../types/crypto';
+import type { EncryptedMessage } from '@steggit/types';
 
 export default function decryptMessage(
   encrypted: EncryptedMessage,

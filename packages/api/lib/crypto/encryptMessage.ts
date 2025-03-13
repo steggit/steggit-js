@@ -1,5 +1,5 @@
 import { createCipheriv, randomBytes } from 'node:crypto';
-import type { EncryptedMessage } from '../../types/crypto';
+import type { EncryptedMessage } from '@steggit/types';
 import { DEFAULT_IV_LENGTH } from '.';
 
 export default function encryptMessage(

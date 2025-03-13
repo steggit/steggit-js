@@ -1,8 +1,8 @@
+import type { User } from '@steggit/types';
 import {
   embedSecretMessage,
   extractSecretMessage,
 } from '../modules/steganography';
-import { User } from '../types/user';
 
 const mockUserOne: User = {
   id: '1',

@@ -1,3 +1,4 @@
+import type { User } from '@steggit/types';
 import {
   decryptMessage,
   generateEncryptionKey,
@@ -13,7 +14,6 @@ import {
   invisibleToBinary,
   binaryToString,
 } from '../../lib/string';
-import { User } from '../../types/user';
 
 interface ExtractSecretMessageInput {
   message: string;
