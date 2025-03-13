@@ -1,6 +1,10 @@
+export const DEFAULT_KEY_LENGTH = 32;
+export const DEFAULT_IV_LENGTH = 24;
 export { default as getGlobalSecret } from './getGlobalSecret';
 export { default as generateUserSecret } from './generateUserSecret';
 export { default as encryptMessage } from './encryptMessage';
 export { default as decryptMessage } from './decryptMessage';
 export { default as generateSharedUserSecret } from './generateSharedUserSecret';
 export { default as generateEncryptionKey } from './generateEncryptionKey';
+export { default as stringifyEncryptedMessage } from './stringifyEncryptedMessage';
+export { default as parseEncryptedMessage } from './parseEncryptedMessage';

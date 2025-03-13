@@ -5,6 +5,9 @@ import {
   generateSharedUserSecret,
   generateUserSecret,
   getGlobalSecret,
+  DEFAULT_KEY_LENGTH,
+  stringifyEncryptedMessage,
+  parseEncryptedMessage,
 } from '../lib/crypto';
 import type { User } from '../types/user';
 
@@ -51,19 +54,19 @@ describe(generateSharedUserSecret.name, () => {
 
 describe(generateEncryptionKey.name, () => {
   it('should return an encryption key', () => {
-    const key = generateEncryptionKey('test', 32);
-    expect(key.length).toBe(64);
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
+    expect(key.length).toBe(DEFAULT_KEY_LENGTH * 2);
   });
 
   it('should return the same key with the same input', () => {
-    const key1 = generateEncryptionKey('test', 32);
-    const key2 = generateEncryptionKey('test', 32);
+    const key1 = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
+    const key2 = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
     expect(key1).toBe(key2);
   });
 
   it('should return a different key with different input', () => {
-    const key1 = generateEncryptionKey('test', 32);
-    const key2 = generateEncryptionKey('test2', 32);
+    const key1 = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
+    const key2 = generateEncryptionKey('test2', DEFAULT_KEY_LENGTH);
     expect(key1).not.toBe(key2);
   });
 });
@@ -76,19 +79,19 @@ describe(encryptMessage.name, () => {
   });
 
   it('should encrypt a message', () => {
-    const message = 'test';
-    const key = generateEncryptionKey('test', 32);
+    const message = 'testtesttest';
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
     const encrypted = encryptMessage(message, key);
     expect(encrypted).toBeDefined();
     expect(encrypted.iv.length).toBe(24);
-    expect(encrypted.content.length).toBe(8);
+    expect(encrypted.content.length).toBe(24);
     expect(encrypted.authTag.length).toBe(32);
     expect(encrypted.content).not.toBe(message);
   });
 
   it('the same message should be encrypted differently each time', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', 32);
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
     const encrypted1 = encryptMessage(message, key);
     const encrypted2 = encryptMessage(message, key);
     expect(encrypted1).not.toBe(encrypted2);
@@ -98,9 +101,9 @@ describe(encryptMessage.name, () => {
 describe(decryptMessage.name, () => {
   it('should throw an error if key is incorrect', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', 32);
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
     const encrypted = encryptMessage(message, key);
-    const wrongKey = generateEncryptionKey('wrong', 32);
+    const wrongKey = generateEncryptionKey('wrong', DEFAULT_KEY_LENGTH);
     expect(() => decryptMessage(encrypted, wrongKey)).toThrow(
       'Unsupported state or unable to authenticate data',
     );
@@ -108,7 +111,7 @@ describe(decryptMessage.name, () => {
 
   it('should decrypt a message', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', 32);
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
     const encrypted = encryptMessage(message, key);
     const decrypted = decryptMessage(encrypted, key);
     expect(decrypted).toBe(message);
@@ -117,7 +120,7 @@ describe(decryptMessage.name, () => {
 
   it('the same message should be decrypted the same each time', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', 32);
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
     const encrypted1 = encryptMessage(message, key);
     const encrypted2 = encryptMessage(message, key);
     const decrypted1 = decryptMessage(encrypted1, key);
@@ -130,10 +133,33 @@ describe(decryptMessage.name, () => {
     const message = 'test';
     const sharedSecret = generateSharedUserSecret([mockUserOne, mockUserTwo]);
     const sharedSecret2 = generateSharedUserSecret([mockUserTwo, mockUserOne]);
-    const key1 = generateEncryptionKey(sharedSecret, 32);
-    const key2 = generateEncryptionKey(sharedSecret2, 32);
+    const key1 = generateEncryptionKey(sharedSecret, DEFAULT_KEY_LENGTH);
+    const key2 = generateEncryptionKey(sharedSecret2, DEFAULT_KEY_LENGTH);
     const encrypted = encryptMessage(message, key1);
     const decrypted = decryptMessage(encrypted, key2);
     expect(decrypted).toBe(message);
+  });
+});
+
+describe(stringifyEncryptedMessage.name, () => {
+  it('should stringify an encrypted message', () => {
+    const message = 'test';
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
+    const encrypted = encryptMessage(message, key);
+    const stringified = stringifyEncryptedMessage(encrypted);
+    expect(stringified).toBe(
+      `${encrypted.authTag}${encrypted.iv}${encrypted.content}`,
+    );
+  });
+});
+
+describe(parseEncryptedMessage.name, () => {
+  it('should parse an encrypted message', () => {
+    const message = 'test';
+    const key = generateEncryptionKey('test', DEFAULT_KEY_LENGTH);
+    const encrypted = encryptMessage(message, key);
+    const stringified = stringifyEncryptedMessage(encrypted);
+    const parsed = parseEncryptedMessage(stringified);
+    expect(parsed).toEqual(encrypted);
   });
 });

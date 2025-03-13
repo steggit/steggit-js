@@ -1,9 +1,10 @@
 import { createHmac } from 'node:crypto';
 import getGlobalSecret from './getGlobalSecret';
+import { DEFAULT_KEY_LENGTH } from '.';
 
 export default function generateEncryptionKey(
   input: string,
-  length: number,
+  length = DEFAULT_KEY_LENGTH,
   ctx = 'default',
 ) {
   const pseudoRandomKey = createHmac('sha256', getGlobalSecret())
