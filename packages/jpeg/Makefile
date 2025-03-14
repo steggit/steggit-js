@@ -1,12 +1,15 @@
 CC=gcc
-CFLAGS=-Wall -I/opt/homebrew/opt/jpeg-turbo/include
+CFLAGS=-Wall -I/opt/homebrew/opt/jpeg-turbo/include -Iinclude -g
 LDFLAGS=-L/opt/homebrew/opt/jpeg-turbo/lib -ljpeg
 
-SRC=src/main.c
-TARGET=build/stego
+SRC = src/main.c src/stego.c src/jpeg_utils.c
+OBJ = $(SRC:.c=.o)
+TARGET = build/stego
 
-all: $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS)
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJ) $(TARGET)
