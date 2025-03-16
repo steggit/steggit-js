@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define TERMINATOR 0xFF
+#define MAX_BUFFER_SIZE 65536 // 64KB
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 
 // Embed message in the DCT coefficients
 void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
@@ -38,7 +41,7 @@ char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSI
   size_t available_bits = (width_in_blocks * height_in_blocks) * 63;
   size_t max_message_length = available_bits / 8;
 
-  char *buffer = (char *)malloc(max_message_length);
+  char *buffer = (char *)malloc(MIN(max_message_length, MAX_BUFFER_SIZE));
   if (buffer == NULL) {
     fprintf(stderr, "Memory allocation failed\n");
     return NULL;
