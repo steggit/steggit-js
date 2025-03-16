@@ -126,7 +126,6 @@ int extract_message_from_jpeg(const char *input_path) {
                     sizeof(message));
 
     if (message[0] != '\0') {
-      printf("message: %s\n", message);
       break;
     }
   }

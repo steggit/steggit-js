@@ -15,16 +15,10 @@ void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
         int bit = (message[*bit_index / 8] >> (7 - (*bit_index % 8))) & 1;
         block[i] = (block[i] & ~1) | bit;
 
-        printf("Embedding bit: %d into block[%d][%d][%zu]\n", bit, col, i,
-               *bit_index);
-
         (*bit_index)++;
       } else if (*bit_index < message_length + 8) {
         int bit = (TERMINATOR >> (7 - (*bit_index - message_length))) & 1;
         block[i] = (block[i] & ~1) | bit;
-
-        printf("Embedding terminator bit: %d into block[%d][%d][%zu]\n", bit,
-               col, i, *bit_index);
 
         (*bit_index)++;
       } else {
@@ -52,7 +46,6 @@ void extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
       bits_collected++;
 
       if (bits_collected == 8) {
-        printf("Current byte: 0x%02X ('%c')\n", current_byte, current_byte);
 
         if (current_byte == TERMINATOR) {
           printf("Terminator reached — stopping extraction\n");
