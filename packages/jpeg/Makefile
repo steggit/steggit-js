@@ -10,7 +10,7 @@ TARGET = build/stego
 UNITY_DIR = third_party/unity
 UNITY_SRC = $(UNITY_DIR)/src/unity.c
 UNITY_INC = -I$(UNITY_DIR)/src
-TEST_SRC = test/test_png.c
+TEST_SRC = test/test_main.c
 TEST_OBJ = $(TEST_SRC:.c=.o)
 TEST_TARGET = build/test_runner
 

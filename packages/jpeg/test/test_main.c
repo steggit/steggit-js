@@ -1,3 +1,5 @@
+#include "file_utils.h"
+#include "jpeg_utils.h"
 #include "png_utils.h"
 #include "unity.h"
 #include <stdio.h>
@@ -36,23 +38,48 @@ void create_output_dir(void) {
 }
 
 void setUp(void) {
-  // Optional: Called before every test
+  // Check files exist
+  FILE *f1 = fopen("test/fixtures/test.png", "rb");
+  TEST_ASSERT_NOT_NULL(f1);
+  fclose(f1);
+
+  FILE *f2 = fopen("test/fixtures/test.jpg", "rb");
+  TEST_ASSERT_NOT_NULL(f2);
+  fclose(f2);
+
+  FILE *f3 = fopen("test/fixtures/tiny_test.png", "rb");
+  TEST_ASSERT_NOT_NULL(f3);
+  fclose(f3);
+
+  FILE *f4 = fopen("test/fixtures/tiny_test.jpg", "rb");
+  TEST_ASSERT_NOT_NULL(f4);
+  fclose(f4);
+
+  FILE *f5 = fopen("test/fixtures/transparent_test.png", "rb");
+  TEST_ASSERT_NOT_NULL(f5);
+  fclose(f5);
+
+  printf("All files exist\n");
 }
 
 void tearDown(void) {
   // Optional: Called after every test
 }
 
+void testMimetype(void) {
+  const char *input = "test/fixtures/test.png";
+  const char *mimetype = get_mime_type(input);
+  TEST_ASSERT_EQUAL_STRING("image/png", mimetype);
+
+  input = "test/fixtures/test.jpg";
+  mimetype = get_mime_type(input);
+  TEST_ASSERT_EQUAL_STRING("image/jpeg", mimetype);
+}
+
 void testPngBasicMessage(void) {
   const char *input = "test/fixtures/test.png";
-  // Check file exists
-  printf("Input file: %s\n", input);
-  FILE *file = fopen(input, "rb");
-  TEST_ASSERT_NOT_NULL(file);
-  fclose(file);
-
   const char *output = "test/output/basic_message.png";
-  const char *message = "Hello, Stego!";
+  const char *message = "This is a basic message in a PNG file!";
   const char *header = "$$";
 
   int embed_result = embed_message_in_png(input, output, header, message);
@@ -62,14 +89,21 @@ void testPngBasicMessage(void) {
   TEST_ASSERT_EQUAL(0, extract_result);
 }
 
+void testJpegBasicMessage(void) {
+  const char *input = "test/fixtures/test.jpg";
+  const char *output = "test/output/basic_message.jpg";
+  const char *message = "This is a simple JPEG test!";
+  const char *header = "$$";
+
+  int embed_result = embed_message_in_jpeg(input, output, header, message);
+  TEST_ASSERT_EQUAL(0, embed_result);
+
+  int extract_result = extract_message_from_jpeg(output, header);
+  TEST_ASSERT_EQUAL(0, extract_result);
+}
+
 void testPngCustomHeader(void) {
   const char *input = "test/fixtures/test.png";
-  // Check file exists
-  printf("Input file: %s\n", input);
-  FILE *file = fopen(input, "rb");
-  TEST_ASSERT_NOT_NULL(file);
-  fclose(file);
-
   const char *output = "test/output/custom_header.png";
   const char *message = "This is a different message";
   const char *header = "CUSTOM";
@@ -78,6 +112,19 @@ void testPngCustomHeader(void) {
   TEST_ASSERT_EQUAL(0, embed_result);
 
   int extract_result = extract_message_from_png(output, header);
+  TEST_ASSERT_EQUAL(0, extract_result);
+}
+
+void testJpegCustomHeader(void) {
+  const char *input = "test/fixtures/test.jpg";
+  const char *output = "test/output/custom_header.jpg";
+  const char *message = "This is a different message";
+  const char *header = "CUSTOM";
+
+  int embed_result = embed_message_in_jpeg(input, output, header, message);
+  TEST_ASSERT_EQUAL(0, embed_result);
+
+  int extract_result = extract_message_from_jpeg(output, header);
   TEST_ASSERT_EQUAL(0, extract_result);
 }
 
@@ -94,7 +141,7 @@ void testTransparentPng(void) {
   TEST_ASSERT_EQUAL(0, extract_result);
 }
 
-void testTooLargeMessage(void) {
+void testTooLargeMessagePng(void) {
   const char *input = "test/fixtures/tiny_test.png";
   const char *output = "test/output/too_large_message.png";
   const char *message =
@@ -106,14 +153,30 @@ void testTooLargeMessage(void) {
   TEST_ASSERT_EQUAL(-1, embed_result);
 }
 
+void testTooLargeMessageJpeg(void) {
+  const char *input = "test/fixtures/tiny_test.jpg";
+  const char *output = "test/output/too_large_message.jpg";
+  const char *message =
+      "This is a message that is too large to embed in a JPEG file. I have to "
+      "add some more text to make it longer to ensure that the test fails.";
+  const char *header = "$$";
+
+  int embed_result = embed_message_in_jpeg(input, output, header, message);
+  TEST_ASSERT_EQUAL(-1, embed_result);
+}
+
 int main(void) {
   create_output_dir();
   atexit(cleanup);
 
   UNITY_BEGIN();
+  RUN_TEST(testMimetype);
   RUN_TEST(testPngBasicMessage);
+  RUN_TEST(testJpegBasicMessage);
   RUN_TEST(testPngCustomHeader);
+  RUN_TEST(testJpegCustomHeader);
   RUN_TEST(testTransparentPng);
-  RUN_TEST(testTooLargeMessage);
+  RUN_TEST(testTooLargeMessagePng);
+  RUN_TEST(testTooLargeMessageJpeg);
   return UNITY_END();
 }

@@ -32,6 +32,8 @@ add_subdirectory(third_party/unity)
 add_executable(test_runner
     ${TEST_FILES}
     src/png_utils.c
+    src/jpeg_utils.c
+    src/file_utils.c
 )
 
 # Include fixtures
