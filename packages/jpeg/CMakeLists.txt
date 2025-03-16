@@ -8,16 +8,21 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(/opt/homebrew/opt/jpeg-turbo/include)
 link_directories(/opt/homebrew/opt/jpeg-turbo/lib)
 
+# Include libpng headers and library paths
+include_directories(/opt/homebrew/opt/libpng/include)
+link_directories(/opt/homebrew/opt/libpng/lib)
+
 # Add source files
 add_executable(stego
     src/main.c
     src/stego.c
     src/jpeg_utils.c
     src/file_utils.c
+    src/png_utils.c
 )
 
-# Link to libjpeg
-target_link_libraries(stego PRIVATE jpeg)
+# Link to libjpeg and libpng
+target_link_libraries(stego PRIVATE jpeg png)
 
 # Enable Address Sanitizer (ASan) for debugging
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fsanitize=address")

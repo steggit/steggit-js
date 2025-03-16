@@ -1,4 +1,5 @@
 #include "file_utils.h"
+#include "png_utils.h"
 #include "stego.h"
 #include <stdio.h>
 #include <string.h>
@@ -15,8 +16,9 @@ int main(int argc, char *argv[]) {
   }
 
   const char *mime_type = get_mime_type(argv[2]);
-  if (strcmp(mime_type, "image/jpeg") != 0) {
-    fprintf(stderr, "Error: Input file must be a JPEG image\n");
+  if (strcmp(mime_type, "image/jpeg") != 0 &&
+      strcmp(mime_type, "image/png") != 0) {
+    fprintf(stderr, "Error: Input file must be a JPEG or PNG image\n");
     return 1;
   }
 
@@ -27,9 +29,17 @@ int main(int argc, char *argv[]) {
       return 1;
     }
     const char *header = (argc == 4) ? argv[3] : DEFAULT_HEADER;
-    if (extract_message_from_jpeg(argv[2], header) != 0) {
-      fprintf(stderr, "Failed to extract message\n");
-      return 1;
+
+    if (strcmp(mime_type, "image/jpeg") == 0) {
+      if (extract_message_from_jpeg(argv[2], header) != 0) {
+        fprintf(stderr, "Failed to extract message\n");
+        return 1;
+      }
+    } else if (strcmp(mime_type, "image/png") == 0) {
+      if (extract_message_from_png(argv[2], header) != 0) {
+        fprintf(stderr, "Failed to extract message\n");
+        return 1;
+      }
     }
   } else if (strcmp(argv[1], "encode") == 0) {
     // Encode Mode
@@ -39,7 +49,15 @@ int main(int argc, char *argv[]) {
       return 1;
     }
     const char *header = (argc == 6) ? argv[5] : DEFAULT_HEADER;
-    if (embed_message_in_jpeg(argv[2], argv[3], argv[4], header) != 0) {
+    int result = -1;
+
+    if (strcmp(mime_type, "image/jpeg") == 0) {
+      result = embed_message_in_jpeg(argv[2], argv[3], argv[4], header);
+    } else if (strcmp(mime_type, "image/png") == 0) {
+      result = embed_message_in_png(argv[2], argv[3], argv[4], header);
+    }
+
+    if (result != 0) {
       fprintf(stderr, "Failed to embed message\n");
       return 1;
     }
