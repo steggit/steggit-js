@@ -1,6 +1,6 @@
 #include "file_utils.h"
+#include "jpeg_utils.h"
 #include "png_utils.h"
-#include "stego.h"
 #include <stdio.h>
 #include <string.h>
 #define DEFAULT_HEADER "$$"

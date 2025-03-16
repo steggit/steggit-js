@@ -15,7 +15,6 @@ link_directories(/opt/homebrew/opt/libpng/lib)
 # Add source files
 add_executable(stego
     src/main.c
-    src/stego.c
     src/jpeg_utils.c
     src/file_utils.c
     src/png_utils.c
