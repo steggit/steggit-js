@@ -7,7 +7,7 @@
 #define TERMINATOR 0xFF
 
 int embed_message_in_jpeg(const char *input_path, const char *output_path,
-                          const char *message) {
+                          const char *message, const char *header) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_compress_struct dstinfo;
   struct jpeg_error_mgr jerr;
@@ -27,6 +27,10 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
     return -1;
   }
 
+  char combined_message[strlen(header) + strlen(message) + 1];
+  strcpy(combined_message, header);
+  strcat(combined_message, message);
+
   cinfo.err = jpeg_std_error(&jerr);
   jpeg_create_decompress(&cinfo);
   jpeg_stdio_src(&cinfo, infile);
@@ -39,7 +43,7 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   jpeg_copy_critical_parameters(&cinfo, &dstinfo);
 
   size_t bit_index = 0;
-  size_t message_length = strlen(message) * 8;
+  size_t combined_length = strlen(combined_message) * 8;
 
   jpeg_component_info *comp = &cinfo.comp_info[0];
   JDIMENSION width_in_blocks = comp->width_in_blocks;
@@ -47,19 +51,20 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
 
   printf("width_in_blocks: %d\n", width_in_blocks);
   printf("height_in_blocks: %d\n", height_in_blocks);
+  printf("header: %s\n", header);
   printf("embed_message: %s\n", message);
 
   size_t available_bits = (width_in_blocks * height_in_blocks) * 63;
   size_t available_bytes = available_bits / 8;
 
   printf("available_bytes: %zu\n", available_bytes);
-  printf("message_length: %zu\n", message_length);
+  printf("combined_length: %zu\n", combined_length);
 
-  if (message_length > available_bytes) {
+  if (combined_length > available_bytes) {
     fprintf(stderr,
-            "Error: Message too large! Max length = %zu bytes, but message "
+            "Error: Message too large! Max length = %zu bytes, but total "
             "length = %zu bytes\n",
-            available_bytes, message_length);
+            available_bytes, combined_length);
     return EXIT_FAILURE;
   }
 
@@ -67,9 +72,9 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
     JBLOCKARRAY row_ptrs = (cinfo.mem->access_virt_barray)(
         (j_common_ptr)&cinfo, coef_arrays[0], row, 1, TRUE);
 
-    embed_message(row_ptrs, width_in_blocks, message, &bit_index,
-                  message_length);
-    if (bit_index >= message_length + 8)
+    embed_message(row_ptrs, width_in_blocks, combined_message, &bit_index,
+                  combined_length);
+    if (bit_index >= combined_length + 8)
       break;
   }
 
@@ -89,7 +94,7 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   return EXIT_SUCCESS;
 }
 
-int extract_message_from_jpeg(const char *input_path) {
+int extract_message_from_jpeg(const char *input_path, const char *header) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
   FILE *infile = NULL;
@@ -114,12 +119,14 @@ int extract_message_from_jpeg(const char *input_path) {
 
   printf("width_in_blocks: %d\n", width_in_blocks);
   printf("height_in_blocks: %d\n", height_in_blocks);
+  printf("header: %s\n", header);
 
   for (JDIMENSION row = 0; row < height_in_blocks; row++) {
     JBLOCKARRAY row_ptrs = (cinfo.mem->access_virt_barray)(
         (j_common_ptr)&cinfo, coef_arrays[0], row, 1, FALSE);
 
-    message = extract_message(row_ptrs, width_in_blocks, height_in_blocks);
+    message =
+        extract_message(row_ptrs, width_in_blocks, height_in_blocks, header);
 
     if (message != NULL && message[0] != '\0') {
       break;

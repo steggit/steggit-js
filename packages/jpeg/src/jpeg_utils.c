@@ -1,6 +1,7 @@
 #include "jpeg_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define TERMINATOR 0xFF
 #define MAX_BUFFER_SIZE 65536 // 64KB
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -32,11 +33,13 @@ void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 }
 
 // Extract message from the DCT coefficients
-char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSION height_in_blocks) {
+char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSION height_in_blocks, const char *header) {
   unsigned char current_byte = 0;
   size_t bits_collected = 0;
   size_t message_length = 0;
   int done = 0;
+  int header_found = 0;
+  size_t header_length = strlen(header);
 
   size_t available_bits = (width_in_blocks * height_in_blocks) * 63;
   size_t max_message_length = available_bits / 8;
@@ -67,6 +70,15 @@ char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSI
 
         if (message_length < max_message_length - 1) {
           buffer[message_length++] = current_byte;
+          
+          // Check if we've found the header
+          if (!header_found && header_length > 0 && message_length >= header_length) {
+            if (strncmp(buffer + message_length - header_length, header, header_length) == 0) {
+              header_found = 1;
+              // Reset message_length to start after the header
+              message_length = 0;
+            }
+          }
         } else {
           printf("Buffer overflow prevented at index %zu\n", message_length);
           buffer[message_length] = '\0';
@@ -78,6 +90,11 @@ char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSI
         bits_collected = 0;
       }
     }
+  }
+
+  if (!header_found && header_length > 0) {
+    // Header not found, return empty string
+    buffer[0] = '\0';
   }
 
   return buffer;
