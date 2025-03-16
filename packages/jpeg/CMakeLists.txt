@@ -13,6 +13,7 @@ add_executable(stego
     src/main.c
     src/stego.c
     src/jpeg_utils.c
+    src/file_utils.c
 )
 
 # Link to libjpeg

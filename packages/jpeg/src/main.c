@@ -1,3 +1,4 @@
+#include "file_utils.h"
 #include "stego.h"
 #include <stdio.h>
 #include <string.h>
@@ -7,15 +8,22 @@ int main(int argc, char *argv[]) {
 
   if (argc < 3) {
     printf("Usage:\n");
-    printf("  Encode: %s encode <input.jpg> <output.jpg> <message> [header]\n", argv[0]);
-    printf("  Decode: %s decode <input.jpg> [header]\n", argv[0]);
+    printf("  Encode: %s encode <input> <output> <message> [header]\n",
+           argv[0]);
+    printf("  Decode: %s decode <input> [header]\n", argv[0]);
+    return 1;
+  }
+
+  const char *mime_type = get_mime_type(argv[2]);
+  if (strcmp(mime_type, "image/jpeg") != 0) {
+    fprintf(stderr, "Error: Input file must be a JPEG image\n");
     return 1;
   }
 
   if (strcmp(argv[1], "decode") == 0) {
     // Decode Mode
     if (argc < 3 || argc > 4) {
-      printf("Decode usage: %s decode <input.jpg> [header]\n", argv[0]);
+      printf("Decode usage: %s decode <input> [header]\n", argv[0]);
       return 1;
     }
     const char *header = (argc == 4) ? argv[3] : DEFAULT_HEADER;
@@ -26,7 +34,8 @@ int main(int argc, char *argv[]) {
   } else if (strcmp(argv[1], "encode") == 0) {
     // Encode Mode
     if (argc < 5 || argc > 6) {
-      printf("Encode usage: %s encode <input.jpg> <output.jpg> <message> [header]\n", argv[0]);
+      printf("Encode usage: %s encode <input> <output> <message> [header]\n",
+             argv[0]);
       return 1;
     }
     const char *header = (argc == 6) ? argv[5] : DEFAULT_HEADER;
@@ -37,8 +46,9 @@ int main(int argc, char *argv[]) {
   } else {
     printf("Unknown command: %s\n", argv[1]);
     printf("Usage:\n");
-    printf("  Encode: %s encode <input.jpg> <output.jpg> <message> [header]\n", argv[0]);
-    printf("  Decode: %s decode <input.jpg> [header]\n", argv[0]);
+    printf("  Encode: %s encode <input> <output> <message> [header]\n",
+           argv[0]);
+    printf("  Decode: %s decode <input> [header]\n", argv[0]);
     return 1;
   }
 
