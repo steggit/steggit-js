@@ -1,0 +1,3 @@
+[submodule "packages/jpeg/unity"]
+	path = packages/jpeg/unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
