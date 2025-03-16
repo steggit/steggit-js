@@ -43,7 +43,8 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   jpeg_copy_critical_parameters(&cinfo, &dstinfo);
 
   size_t bit_index = 0;
-  size_t combined_length = strlen(combined_message) * 8;
+  size_t combined_length = strlen(combined_message);
+  size_t combined_bits = combined_length * 8;
 
   jpeg_component_info *comp = &cinfo.comp_info[0];
   JDIMENSION width_in_blocks = comp->width_in_blocks;
@@ -58,14 +59,15 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   size_t available_bytes = available_bits / 8;
 
   printf("available_bytes: %zu\n", available_bytes);
-  printf("combined_length: %zu\n", combined_length);
+  printf("combined_length: %zu bytes (%zu bits)\n", combined_length,
+         combined_bits);
 
-  if (combined_length > available_bytes) {
+  if (combined_bits > available_bits) {
     fprintf(stderr,
-            "Error: Message too large! Max length = %zu bytes, but total "
-            "length = %zu bytes\n",
-            available_bytes, combined_length);
-    return EXIT_FAILURE;
+            "Error: Message too large! Max length = %zu bits, but total "
+            "length = %zu bits\n",
+            available_bits, combined_bits);
+    return -1;
   }
 
   for (JDIMENSION row = 0; row < height_in_blocks; row++) {
@@ -91,7 +93,7 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   fclose(outfile);
   printf("closing files\n");
 
-  return EXIT_SUCCESS;
+  return 0;
 }
 
 int extract_message_from_jpeg(const char *input_path, const char *header) {
@@ -143,6 +145,6 @@ int extract_message_from_jpeg(const char *input_path, const char *header) {
     return 0;
   } else {
     fprintf(stderr, "Failed to extract message.\n");
-    return 1;
+    return -1;
   }
 }

@@ -6,7 +6,6 @@
 #define MAX_BUFFER_SIZE 65536 // 64KB
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-
 // Embed message in the DCT coefficients
 void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
                    const char *message, size_t *bit_index,
@@ -33,7 +32,8 @@ void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 }
 
 // Extract message from the DCT coefficients
-char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSION height_in_blocks, const char *header) {
+char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
+                      JDIMENSION height_in_blocks, const char *header) {
   unsigned char current_byte = 0;
   size_t bits_collected = 0;
   size_t message_length = 0;
@@ -70,10 +70,12 @@ char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSI
 
         if (message_length < max_message_length - 1) {
           buffer[message_length++] = current_byte;
-          
+
           // Check if we've found the header
-          if (!header_found && header_length > 0 && message_length >= header_length) {
-            if (strncmp(buffer + message_length - header_length, header, header_length) == 0) {
+          if (!header_found && header_length > 0 &&
+              message_length >= header_length) {
+            if (strncmp(buffer + message_length - header_length, header,
+                        header_length) == 0) {
               header_found = 1;
               // Reset message_length to start after the header
               message_length = 0;
