@@ -107,9 +107,7 @@ int extract_message_from_jpeg(const char *input_path) {
   jpeg_read_header(&cinfo, TRUE);
   coef_arrays = jpeg_read_coefficients(&cinfo);
 
-  char message[1024] = {0};
-  size_t bit_index = 0;
-
+  char *message = NULL;
   jpeg_component_info *comp = &cinfo.comp_info[0];
   JDIMENSION width_in_blocks = comp->width_in_blocks;
   JDIMENSION height_in_blocks = comp->height_in_blocks;
@@ -117,15 +115,13 @@ int extract_message_from_jpeg(const char *input_path) {
   printf("width_in_blocks: %d\n", width_in_blocks);
   printf("height_in_blocks: %d\n", height_in_blocks);
 
-  int done = 0;
-  for (JDIMENSION row = 0; row < height_in_blocks && !done; row++) {
+  for (JDIMENSION row = 0; row < height_in_blocks; row++) {
     JBLOCKARRAY row_ptrs = (cinfo.mem->access_virt_barray)(
         (j_common_ptr)&cinfo, coef_arrays[0], row, 1, FALSE);
 
-    extract_message(row_ptrs, width_in_blocks, message, &bit_index,
-                    sizeof(message));
+    message = extract_message(row_ptrs, width_in_blocks, height_in_blocks);
 
-    if (message[0] != '\0') {
+    if (message != NULL && message[0] != '\0') {
       break;
     }
   }
@@ -134,6 +130,12 @@ int extract_message_from_jpeg(const char *input_path) {
   jpeg_destroy_decompress(&cinfo);
   fclose(infile);
 
-  printf("Extracted message: \"%s\"\n", message);
-  return EXIT_SUCCESS;
+  if (message != NULL) {
+    printf("%s\n", message);
+    free(message);
+    return 0;
+  } else {
+    fprintf(stderr, "Failed to extract message.\n");
+    return 1;
+  }
 }

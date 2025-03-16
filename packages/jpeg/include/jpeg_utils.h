@@ -5,9 +5,10 @@
 #include <jpeglib.h>
 
 void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
-                   const char *message, size_t *bit_index, size_t message_length);
+                   const char *message, size_t *bit_index,
+                   size_t message_length);
 
-void extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
-                     char *buffer, size_t *bit_index, size_t buffer_size);
+char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
+                      JDIMENSION height_in_blocks);
 
 #endif // JPEG_UTILS_H

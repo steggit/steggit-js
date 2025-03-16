@@ -1,6 +1,6 @@
 #include "jpeg_utils.h"
 #include <stdio.h>
-
+#include <stdlib.h>
 #define TERMINATOR 0xFF
 
 // Embed message in the DCT coefficients
@@ -29,12 +29,20 @@ void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 }
 
 // Extract message from the DCT coefficients
-void extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
-                     char *buffer, size_t *bit_index, size_t buffer_size) {
+char* extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks, JDIMENSION height_in_blocks) {
   unsigned char current_byte = 0;
   size_t bits_collected = 0;
   size_t message_length = 0;
   int done = 0;
+
+  size_t available_bits = (width_in_blocks * height_in_blocks) * 63;
+  size_t max_message_length = available_bits / 8;
+
+  char *buffer = (char *)malloc(max_message_length);
+  if (buffer == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    return NULL;
+  }
 
   for (JDIMENSION col = 0; col < width_in_blocks && !done; col++) {
     JCOEF *block = row_ptrs[0][col];
@@ -54,7 +62,7 @@ void extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
           break;
         }
 
-        if (message_length < buffer_size - 1) {
+        if (message_length < max_message_length - 1) {
           buffer[message_length++] = current_byte;
         } else {
           printf("Buffer overflow prevented at index %zu\n", message_length);
@@ -69,9 +77,5 @@ void extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
     }
   }
 
-  buffer[message_length] = '\0';
-
-  if (message_length > 100) {
-    printf("No terminator found — stopping extraction\n");
-  }
+  return buffer;
 }
