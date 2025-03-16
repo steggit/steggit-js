@@ -14,6 +14,6 @@ char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 int embed_message_in_jpeg(const char *input_path, const char *output_path,
                           const char *message, const char *header);
 
-int extract_message_from_jpeg(const char *input_path, const char *header);
+char *extract_message_from_jpeg(const char *input_path, const char *header);
 
 #endif // JPEG_UTILS_H

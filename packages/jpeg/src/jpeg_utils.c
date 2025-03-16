@@ -188,7 +188,7 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   return 0;
 }
 
-int extract_message_from_jpeg(const char *input_path, const char *header) {
+char *extract_message_from_jpeg(const char *input_path, const char *header) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
   FILE *infile = NULL;
@@ -197,7 +197,7 @@ int extract_message_from_jpeg(const char *input_path, const char *header) {
   infile = fopen(input_path, "rb");
   if (!infile) {
     perror("Failed to open input file");
-    return -1;
+    return NULL;
   }
 
   cinfo.err = jpeg_std_error(&jerr);
@@ -231,12 +231,5 @@ int extract_message_from_jpeg(const char *input_path, const char *header) {
   jpeg_destroy_decompress(&cinfo);
   fclose(infile);
 
-  if (message != NULL) {
-    printf("%s\n", message);
-    free(message);
-    return 0;
-  } else {
-    fprintf(stderr, "Failed to extract message.\n");
-    return -1;
-  }
+  return message;
 }

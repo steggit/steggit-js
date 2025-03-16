@@ -74,6 +74,10 @@ void testMimetype(void) {
   input = "test/fixtures/test.jpg";
   mimetype = get_mime_type(input);
   TEST_ASSERT_EQUAL_STRING("image/jpeg", mimetype);
+
+  input = "test/fixtures/test.txt";
+  mimetype = get_mime_type(input);
+  TEST_ASSERT_NULL(mimetype);
 }
 
 void testPngBasicMessage(void) {
@@ -82,11 +86,12 @@ void testPngBasicMessage(void) {
   const char *message = "This is a basic message in a PNG file!";
   const char *header = "$$";
 
-  int embed_result = embed_message_in_png(input, output, header, message);
+  int embed_result = embed_message_in_png(input, output, message, header);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  int extract_result = extract_message_from_png(output, header);
-  TEST_ASSERT_EQUAL(0, extract_result);
+  char *extract_result = extract_message_from_png(output, header);
+  TEST_ASSERT_EQUAL_STRING(message, extract_result);
+  free(extract_result);
 }
 
 void testJpegBasicMessage(void) {
@@ -95,11 +100,12 @@ void testJpegBasicMessage(void) {
   const char *message = "This is a simple JPEG test!";
   const char *header = "$$";
 
-  int embed_result = embed_message_in_jpeg(input, output, header, message);
+  int embed_result = embed_message_in_jpeg(input, output, message, header);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  int extract_result = extract_message_from_jpeg(output, header);
-  TEST_ASSERT_EQUAL(0, extract_result);
+  char *extract_result = extract_message_from_jpeg(output, header);
+  TEST_ASSERT_EQUAL_STRING(message, extract_result);
+  free(extract_result);
 }
 
 void testPngCustomHeader(void) {
@@ -108,11 +114,12 @@ void testPngCustomHeader(void) {
   const char *message = "This is a different message";
   const char *header = "CUSTOM";
 
-  int embed_result = embed_message_in_png(input, output, header, message);
+  int embed_result = embed_message_in_png(input, output, message, header);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  int extract_result = extract_message_from_png(output, header);
-  TEST_ASSERT_EQUAL(0, extract_result);
+  char *extract_result = extract_message_from_png(output, header);
+  TEST_ASSERT_EQUAL_STRING(message, extract_result);
+  free(extract_result);
 }
 
 void testJpegCustomHeader(void) {
@@ -121,11 +128,12 @@ void testJpegCustomHeader(void) {
   const char *message = "This is a different message";
   const char *header = "CUSTOM";
 
-  int embed_result = embed_message_in_jpeg(input, output, header, message);
+  int embed_result = embed_message_in_jpeg(input, output, message, header);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  int extract_result = extract_message_from_jpeg(output, header);
-  TEST_ASSERT_EQUAL(0, extract_result);
+  char *extract_result = extract_message_from_jpeg(output, header);
+  TEST_ASSERT_EQUAL_STRING(message, extract_result);
+  free(extract_result);
 }
 
 void testTransparentPng(void) {
@@ -134,11 +142,12 @@ void testTransparentPng(void) {
   const char *message = "This is a message embedded in a transparent PNG!";
   const char *header = "$$";
 
-  int embed_result = embed_message_in_png(input, output, header, message);
+  int embed_result = embed_message_in_png(input, output, message, header);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  int extract_result = extract_message_from_png(output, header);
-  TEST_ASSERT_EQUAL(0, extract_result);
+  char *extract_result = extract_message_from_png(output, header);
+  TEST_ASSERT_EQUAL_STRING(message, extract_result);
+  free(extract_result);
 }
 
 void testTooLargeMessagePng(void) {
@@ -149,7 +158,7 @@ void testTooLargeMessagePng(void) {
       "add some more text to make it longer to ensure that the test fails.";
   const char *header = "$$";
 
-  int embed_result = embed_message_in_png(input, output, header, message);
+  int embed_result = embed_message_in_png(input, output, message, header);
   TEST_ASSERT_EQUAL(-1, embed_result);
 }
 
@@ -161,7 +170,7 @@ void testTooLargeMessageJpeg(void) {
       "add some more text to make it longer to ensure that the test fails.";
   const char *header = "$$";
 
-  int embed_result = embed_message_in_jpeg(input, output, header, message);
+  int embed_result = embed_message_in_jpeg(input, output, message, header);
   TEST_ASSERT_EQUAL(-1, embed_result);
 }
 

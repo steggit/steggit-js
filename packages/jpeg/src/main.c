@@ -2,6 +2,7 @@
 #include "jpeg_utils.h"
 #include "png_utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #define DEFAULT_HEADER "$$"
 
@@ -31,15 +32,21 @@ int main(int argc, char *argv[]) {
     const char *header = (argc == 4) ? argv[3] : DEFAULT_HEADER;
 
     if (strcmp(mime_type, "image/jpeg") == 0) {
-      if (extract_message_from_jpeg(argv[2], header) != 0) {
+      char *message = extract_message_from_jpeg(argv[2], header);
+      if (message == NULL) {
         fprintf(stderr, "Failed to extract message\n");
-        return 1;
+        return -1;
       }
+      printf("%s\n", message);
+      free(message);
     } else if (strcmp(mime_type, "image/png") == 0) {
-      if (extract_message_from_png(argv[2], header) != 0) {
+      char *message = extract_message_from_png(argv[2], header);
+      if (message == NULL) {
         fprintf(stderr, "Failed to extract message\n");
-        return 1;
+        return -1;
       }
+      printf("%s\n", message);
+      free(message);
     }
   } else if (strcmp(argv[1], "encode") == 0) {
     // Encode Mode

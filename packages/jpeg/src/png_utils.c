@@ -144,31 +144,31 @@ int embed_message_in_png(const char *input_file, const char *output_file,
   return 0;
 }
 
-int extract_message_from_png(const char *input_file, const char *header) {
+char *extract_message_from_png(const char *input_file, const char *header) {
   FILE *fp = fopen(input_file, "rb");
   if (!fp) {
     fprintf(stderr, "Failed to open input file\n");
-    return -1;
+    return NULL;
   }
 
   png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL,
                                            handle_png_error, NULL);
   if (!png) {
     fclose(fp);
-    return -1;
+    return NULL;
   }
 
   png_infop info = png_create_info_struct(png);
   if (!info) {
     png_destroy_read_struct(&png, NULL, NULL);
     fclose(fp);
-    return -1;
+    return NULL;
   }
 
   if (setjmp(png_jmpbuf(png))) {
     png_destroy_read_struct(&png, &info, NULL);
     fclose(fp);
-    return -1;
+    return NULL;
   }
 
   png_init_io(png, fp);
@@ -230,7 +230,7 @@ int extract_message_from_png(const char *input_file, const char *header) {
       free(row_pointers[y]);
     }
     free(row_pointers);
-    return -1;
+    return NULL;
   }
 
   for (int y = 0; y < height && !done; y++) {
@@ -286,15 +286,8 @@ int extract_message_from_png(const char *input_file, const char *header) {
   if (!header_found && header_length > 0) {
     printf("Header not found — discarding extracted message\n");
     free(buffer);
-    return -1;
+    return NULL;
   }
 
-  if (buffer != NULL) {
-    printf("%s\n", buffer);
-    free(buffer);
-    return 0;
-  } else {
-    fprintf(stderr, "Failed to extract message.\n");
-    return -1;
-  }
+  return buffer;
 }
