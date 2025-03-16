@@ -138,7 +138,7 @@ void testJpegCustomHeader(void) {
 
 void testTransparentPng(void) {
   const char *input = "test/fixtures/transparent_test.png";
-  const char *output = "test/output/transparent_test.png";
+  const char *output = "test/output/transparent_message.png";
   const char *message = "This is a message embedded in a transparent PNG!";
   const char *header = "$$";
 
@@ -160,6 +160,13 @@ void testTooLargeMessagePng(void) {
 
   int embed_result = embed_message_in_png(input, output, message, header);
   TEST_ASSERT_EQUAL(-1, embed_result);
+
+  // Verify that the output file doesn't exist since embedding failed
+  FILE *fp = fopen(output, "rb");
+  TEST_ASSERT_NULL(fp);
+  if (fp) {
+    fclose(fp);
+  }
 }
 
 void testTooLargeMessageJpeg(void) {
@@ -172,6 +179,13 @@ void testTooLargeMessageJpeg(void) {
 
   int embed_result = embed_message_in_jpeg(input, output, message, header);
   TEST_ASSERT_EQUAL(-1, embed_result);
+
+  // Verify that the output file doesn't exist since embedding failed
+  FILE *fp = fopen(output, "rb");
+  TEST_ASSERT_NULL(fp);
+  if (fp) {
+    fclose(fp);
+  }
 }
 
 int main(void) {

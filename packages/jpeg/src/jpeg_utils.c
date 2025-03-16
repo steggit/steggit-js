@@ -110,13 +110,6 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
     return -1;
   }
 
-  outfile = fopen(output_path, "wb");
-  if (!outfile) {
-    perror("Failed to open output file");
-    fclose(infile);
-    return -1;
-  }
-
   char combined_message[strlen(header) + strlen(message) + 2];
   strcpy(combined_message, header);
   strcat(combined_message, message);
@@ -128,11 +121,6 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   jpeg_stdio_src(&cinfo, infile);
   jpeg_read_header(&cinfo, TRUE);
   coef_arrays = jpeg_read_coefficients(&cinfo);
-
-  dstinfo.err = jpeg_std_error(&jerr);
-  jpeg_create_compress(&dstinfo);
-  jpeg_stdio_dest(&dstinfo, outfile);
-  jpeg_copy_critical_parameters(&cinfo, &dstinfo);
 
   size_t bit_index = 0;
   size_t combined_length = strlen(combined_message);
@@ -159,8 +147,24 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
             "Error: Message too large! Max length = %zu bits, but total "
             "length = %zu bits\n",
             available_bits, combined_bits);
+    jpeg_destroy_decompress(&cinfo);
+    fclose(infile);
     return -1;
   }
+
+  // Only open output file after validating message length
+  outfile = fopen(output_path, "wb");
+  if (!outfile) {
+    perror("Failed to open output file");
+    jpeg_destroy_decompress(&cinfo);
+    fclose(infile);
+    return -1;
+  }
+
+  dstinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_compress(&dstinfo);
+  jpeg_stdio_dest(&dstinfo, outfile);
+  jpeg_copy_critical_parameters(&cinfo, &dstinfo);
 
   for (JDIMENSION row = 0; row < height_in_blocks; row++) {
     JBLOCKARRAY row_ptrs = (cinfo.mem->access_virt_barray)(
