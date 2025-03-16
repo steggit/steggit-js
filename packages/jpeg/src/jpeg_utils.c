@@ -90,7 +90,9 @@ char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 
   if (!header_found && header_length > 0) {
     // Header not found, return empty string
-    buffer[0] = '\0';
+    free(buffer);
+    printf("Header not found — discarding extracted message\n");
+    return NULL;
   }
 
   return buffer;

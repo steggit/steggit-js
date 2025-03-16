@@ -120,6 +120,10 @@ void testPngCustomHeader(void) {
   char *extract_result = extract_message_from_png(output, header);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
+
+  // Test with incorrect header
+  char *extract_result_incorrect = extract_message_from_png(output, "WRONG");
+  TEST_ASSERT_NULL(extract_result_incorrect);
 }
 
 void testJpegCustomHeader(void) {
@@ -134,6 +138,10 @@ void testJpegCustomHeader(void) {
   char *extract_result = extract_message_from_jpeg(output, header);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
+
+  // Test with incorrect header
+  char *extract_result_incorrect = extract_message_from_jpeg(output, "WRONG");
+  TEST_ASSERT_NULL(extract_result_incorrect);
 }
 
 void testTransparentPng(void) {
