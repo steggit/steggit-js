@@ -49,6 +49,20 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   printf("height_in_blocks: %d\n", height_in_blocks);
   printf("embed_message: %s\n", message);
 
+  size_t available_bits = (width_in_blocks * height_in_blocks) * 63;
+  size_t available_bytes = available_bits / 8;
+
+  printf("available_bytes: %zu\n", available_bytes);
+  printf("message_length: %zu\n", message_length);
+
+  if (message_length > available_bytes) {
+    fprintf(stderr,
+            "Error: Message too large! Max length = %zu bytes, but message "
+            "length = %zu bytes\n",
+            available_bytes, message_length);
+    return EXIT_FAILURE;
+  }
+
   for (JDIMENSION row = 0; row < height_in_blocks; row++) {
     JBLOCKARRAY row_ptrs = (cinfo.mem->access_virt_barray)(
         (j_common_ptr)&cinfo, coef_arrays[0], row, 1, TRUE);
@@ -72,7 +86,7 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   fclose(outfile);
   printf("closing files\n");
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 int extract_message_from_jpeg(const char *input_path) {
@@ -122,5 +136,5 @@ int extract_message_from_jpeg(const char *input_path) {
   fclose(infile);
 
   printf("Extracted message: \"%s\"\n", message);
-  return 0;
+  return EXIT_SUCCESS;
 }
