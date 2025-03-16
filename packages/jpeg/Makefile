@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall -I/opt/homebrew/opt/jpeg-turbo/include -I/opt/homebrew/opt/libpng/include -Iinclude -g
 LDFLAGS=-L/opt/homebrew/opt/jpeg-turbo/lib -L/opt/homebrew/opt/libpng/lib -ljpeg -lpng
 
-SRC = src/main.c src/jpeg_utils.c src/file_utils.c src/png_utils.c
+SRC = src
 OBJ = $(SRC:.c=.o)
 TARGET = build/stego
 
@@ -10,7 +10,7 @@ TARGET = build/stego
 UNITY_DIR = third_party/unity
 UNITY_SRC = $(UNITY_DIR)/src/unity.c
 UNITY_INC = -I$(UNITY_DIR)/src
-TEST_SRC = tests/test_main.c
+TEST_SRC = test/test_png.c
 TEST_OBJ = $(TEST_SRC:.c=.o)
 TEST_TARGET = build/test_runner
 
@@ -40,3 +40,4 @@ clean:
 # ---- Clean only test build ----
 clean-test:
 	rm -f $(TEST_OBJ) $(TEST_TARGET)
+	rm -f test/output/*

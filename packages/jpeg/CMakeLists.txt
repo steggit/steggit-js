@@ -13,12 +13,9 @@ include_directories(/opt/homebrew/opt/libpng/include)
 link_directories(/opt/homebrew/opt/libpng/lib)
 
 # Add source files
-add_executable(stego
-    src/main.c
-    src/jpeg_utils.c
-    src/file_utils.c
-    src/png_utils.c
-)
+file(GLOB SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+file(GLOB TEST_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/*.c")
+add_executable(stego ${SRC_FILES})
 
 # Link to libjpeg and libpng
 target_link_libraries(stego PRIVATE jpeg png)
@@ -33,8 +30,12 @@ add_subdirectory(third_party/unity)
 
 # Add test executable
 add_executable(test_runner
-    tests/test_main.c
+    ${TEST_FILES}
+    src/png_utils.c
 )
+
+# Include fixtures
+add_compile_definitions(FIXTURE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/test/fixtures")
 
 # Include test dependencies
 target_include_directories(test_runner PRIVATE
