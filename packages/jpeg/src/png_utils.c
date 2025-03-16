@@ -67,6 +67,9 @@ int embed_message_in_png(const char *input_file, const char *output_file,
       color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
     png_set_gray_to_rgb(png);
 
+  if (color_type == PNG_COLOR_TYPE_RGB) {
+    png_set_filler(png, 0xff, PNG_FILLER_AFTER);
+  }
   png_read_update_info(png, info);
 
   png_bytep *row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * height);
@@ -104,17 +107,18 @@ int embed_message_in_png(const char *input_file, const char *output_file,
 
   size_t bit_index = 0;
 
-  // First embed the message
   for (int y = 0; y < height && bit_index < required_bits; y++) {
     for (int x = 0; x < width && bit_index < required_bits; x++) {
       png_bytep px = &(row_pointers[y][x * 4]); // RGBA format
 
-      int i = bit_index / 8;       // Current byte
-      int j = 7 - (bit_index % 8); // Current bit position
-
+      int i = bit_index / 8;
+      int j = 7 - (bit_index % 8);
       int bit = (combined_message[i] >> j) & 1;
 
-      px[0] = (px[0] & ~1) | bit;
+      // alternate between channels
+      int channel = bit_index % 4;
+      px[channel] =
+          (px[channel] & ~1) | bit; // Modify R/G/B/A channel based on bit_index
 
       bit_index++;
     }
@@ -191,9 +195,11 @@ int extract_message_from_png(const char *input_file, const char *header) {
       color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
     png_set_gray_to_rgb(png);
 
+  if (color_type == PNG_COLOR_TYPE_RGB) {
+    png_set_filler(png, 0xff, PNG_FILLER_AFTER);
+  }
   png_read_update_info(png, info);
 
-  // ✅ Allocate row buffer
   png_bytep *row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * height);
   for (int y = 0; y < height; y++) {
     row_pointers[y] = (png_bytep)malloc(png_get_rowbytes(png, info));
@@ -202,8 +208,8 @@ int extract_message_from_png(const char *input_file, const char *header) {
   png_read_image(png, row_pointers);
   fclose(fp);
 
-  // ✅ Setup extraction state
   unsigned char current_byte = 0;
+  size_t bit_index = 0;
   size_t bits_collected = 0;
   size_t message_length = 0;
   int done = 0;
@@ -217,7 +223,6 @@ int extract_message_from_png(const char *input_file, const char *header) {
   printf("max_message_length: %zu\n", max_message_length);
   printf("header_length: %zu\n", header_length);
 
-  // ✅ Allocate buffer for message
   char *buffer = (char *)malloc(MIN(max_message_length, MAX_BUFFER_SIZE));
   if (buffer == NULL) {
     fprintf(stderr, "Memory allocation failed\n");
@@ -228,13 +233,14 @@ int extract_message_from_png(const char *input_file, const char *header) {
     return -1;
   }
 
-  // ✅ Extract bits from alpha channel
   for (int y = 0; y < height && !done; y++) {
     for (int x = 0; x < width && !done; x++) {
       png_bytep px = &(row_pointers[y][x * 4]);
 
-      // ✅ Read LSB from alpha channel
-      int bit = px[0] & 1;
+      // alternate between channels
+      int channel = bit_index % 4;
+      int bit = px[channel] & 1;
+
       current_byte = (current_byte << 1) | bit;
       bits_collected++;
 
@@ -249,7 +255,6 @@ int extract_message_from_png(const char *input_file, const char *header) {
         if (message_length < max_message_length - 1) {
           buffer[message_length++] = current_byte;
 
-          // ✅ Header detection
           if (!header_found && header_length > 0 &&
               message_length >= header_length) {
             if (strncmp(buffer + message_length - header_length, header,
@@ -269,16 +274,15 @@ int extract_message_from_png(const char *input_file, const char *header) {
         current_byte = 0;
         bits_collected = 0;
       }
+      bit_index++;
     }
   }
 
-  // ✅ Clean up row memory
   for (int y = 0; y < height; y++) {
     free(row_pointers[y]);
   }
   free(row_pointers);
 
-  // ✅ If header not found, discard the buffer
   if (!header_found && header_length > 0) {
     printf("Header not found — discarding extracted message\n");
     free(buffer);
