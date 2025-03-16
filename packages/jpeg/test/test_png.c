@@ -1,7 +1,39 @@
 #include "png_utils.h"
 #include "unity.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #define FIXTURE_DIR "test/fixtures/"
+#define OUTPUT_DIR "test/output/"
+
+void cleanup(void) {
+  printf("Cleaning up test output directory...\n");
+  char command[256];
+  snprintf(command, sizeof(command), "rm -rf %s", OUTPUT_DIR);
+  int result = system(command);
+  if (result != 0) {
+    fprintf(stderr, "Failed to remove output directory\n");
+  }
+}
+
+// Create output directory at the start
+void create_output_dir(void) {
+  printf("Creating output directory: %s\n", OUTPUT_DIR);
+  // Check if directory already exists
+  if (access(OUTPUT_DIR, F_OK) == 0) {
+    // Directory exists, clear all files
+    cleanup();
+  } else {
+    // Directory doesn't exist, create it
+    if (mkdir(OUTPUT_DIR, 0777) != 0) {
+      fprintf(stderr, "Failed to create output directory\n");
+      exit(EXIT_FAILURE);
+    }
+  }
+}
 
 void setUp(void) {
   // Optional: Called before every test
@@ -19,14 +51,14 @@ const char *getFixturePath(const char *filename) {
 }
 
 void testPngBasicMessage(void) {
-  const char *input = getFixturePath("test.png");
+  const char *input = "test/fixtures/test.png";
   // Check file exists
   printf("Input file: %s\n", input);
   FILE *file = fopen(input, "rb");
   TEST_ASSERT_NOT_NULL(file);
   fclose(file);
 
-  const char *output = getFixturePath("output.png");
+  const char *output = "test/output/output.png";
   const char *message = "Hello, Stego!";
   const char *header = "STEGO";
 
@@ -38,6 +70,9 @@ void testPngBasicMessage(void) {
 }
 
 int main(void) {
+  create_output_dir();
+  atexit(cleanup);
+
   UNITY_BEGIN();
   RUN_TEST(testPngBasicMessage);
   return UNITY_END();

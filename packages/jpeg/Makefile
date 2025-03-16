@@ -40,4 +40,3 @@ clean:
 # ---- Clean only test build ----
 clean-test:
 	rm -f $(TEST_OBJ) $(TEST_TARGET)
-	rm -f test/output/*
