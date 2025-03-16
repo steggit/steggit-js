@@ -26,3 +26,21 @@ target_link_libraries(stego PRIVATE jpeg png)
 # Enable Address Sanitizer (ASan) for debugging
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fsanitize=address")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+
+# ---- Test Setup ----
+# Add Unity as a library
+add_subdirectory(third_party/unity)
+
+# Add test executable
+add_executable(test_runner
+    tests/test_main.c
+)
+
+# Include test dependencies
+target_include_directories(test_runner PRIVATE
+    src
+    third_party/unity/src
+)
+
+# Link libs to the test target
+target_link_libraries(test_runner PRIVATE unity jpeg png)

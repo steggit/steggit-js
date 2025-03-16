@@ -6,10 +6,37 @@ SRC = src/main.c src/jpeg_utils.c src/file_utils.c src/png_utils.c
 OBJ = $(SRC:.c=.o)
 TARGET = build/stego
 
+# ---- Unity Test Setup ----
+UNITY_DIR = third_party/unity
+UNITY_SRC = $(UNITY_DIR)/src/unity.c
+UNITY_INC = -I$(UNITY_DIR)/src
+TEST_SRC = tests/test_main.c
+TEST_OBJ = $(TEST_SRC:.c=.o)
+TEST_TARGET = build/test_runner
+
+# ---- Build main project ----
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
+# ---- Build test runner ----
+test: $(TEST_TARGET)
+	@echo "Running tests..."
+	./$(TEST_TARGET)
+
+$(TEST_TARGET): $(OBJ) $(TEST_OBJ) $(UNITY_SRC)
+	@mkdir -p build
+	$(CC) $(CFLAGS) $(UNITY_INC) -o $@ $^ $(LDFLAGS)
+
+# ---- Build object files ----
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# ---- Clean all builds ----
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TEST_OBJ) $(TARGET) $(TEST_TARGET)
+
+# ---- Clean only test build ----
+clean-test:
+	rm -f $(TEST_OBJ) $(TEST_TARGET)

@@ -1,3 +1,6 @@
 [submodule "packages/jpeg/unity"]
 	path = packages/jpeg/unity
 	url = https://github.com/ThrowTheSwitch/Unity.git
+[submodule "packages/jpeg/third_party/unity"]
+	path = packages/jpeg/third_party/unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
