@@ -1,84 +1,71 @@
 #include "general_utils.h"
 #include "jpeg_utils.h"
 #include "png_utils.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #define DEFAULT_HEADER "$$"
 
 int main(int argc, char *argv[]) {
-  // Check for minimum required arguments
-  if (argc < 3) {
-    printf("Usage:\n");
-    printf("  Encode: %s encode <input> <output> <message> [header]\n",
-           argv[0]);
-    printf("  Decode: %s decode <input> [header]\n", argv[0]);
-    return 1;
+  struct Config config = {0};
+  int result = parse_args(argc, argv, &config);
+  if (result != 0) {
+    exit(result);
   }
 
-  // Validate input file type
-  const char *mime_type = get_mime_type(argv[2]);
+  if (!config.header) {
+    config.header = DEFAULT_HEADER;
+  }
+
+  const char *mime_type = get_mime_type(config.input);
   if (strcmp(mime_type, "image/jpeg") != 0 &&
       strcmp(mime_type, "image/png") != 0) {
     fprintf(stderr, "Error: Input file must be a JPEG or PNG image\n");
-    return 1;
+    exit(1);
   }
 
-  // Handle decode command
-  if (strcmp(argv[1], "decode") == 0) {
-    if (argc < 3 || argc > 4) {
-      printf("Decode usage: %s decode <input> [header]\n", argv[0]);
-      return 1;
-    }
-
-    const char *header = (argc == 4) ? argv[3] : DEFAULT_HEADER;
+  if (strcmp(config.mode, "decode") == 0) {
     char *message = NULL;
 
     if (strcmp(mime_type, "image/jpeg") == 0) {
-      message = extract_message_from_jpeg(argv[2], header);
+      message = extract_message_from_jpeg(config.input, config.header);
     } else {
-      message = extract_message_from_png(argv[2], header);
+      message = extract_message_from_png(config.input, config.header);
     }
 
     if (message == NULL) {
       fprintf(stderr, "Failed to extract message\n");
-      return -1;
+      exit(1);
     }
 
     printf("%s\n", message);
     free(message);
-    return 0;
+    exit(0);
   }
 
-  // Handle encode command
-  if (strcmp(argv[1], "encode") == 0) {
-    if (argc < 5 || argc > 6) {
-      printf("Encode usage: %s encode <input> <output> <message> [header]\n",
-             argv[0]);
-      return 1;
-    }
-
-    const char *header = (argc == 6) ? argv[5] : DEFAULT_HEADER;
+  if (strcmp(config.mode, "encode") == 0) {
     int result = -1;
 
     if (strcmp(mime_type, "image/jpeg") == 0) {
-      result = embed_message_in_jpeg(argv[2], argv[3], argv[4], header);
+      result = embed_message_in_jpeg(config.input, config.output,
+                                     config.message, config.header);
     } else {
-      result = embed_message_in_png(argv[2], argv[3], argv[4], header);
+      result = embed_message_in_png(config.input, config.output, config.message,
+                                    config.header);
     }
 
     if (result != 0) {
       fprintf(stderr, "Failed to embed message\n");
-      return 1;
+      exit(1);
     }
 
-    return 0;
+    exit(0);
   }
 
-  // Handle unknown command
   printf("Unknown command: %s\n", argv[1]);
   printf("Usage:\n");
-  printf("  Encode: %s encode <input> <output> <message> [header]\n", argv[0]);
-  printf("  Decode: %s decode <input> [header]\n", argv[0]);
-  return 1;
+  printf("  Encode: %s encode --input <input> --output <output> --message "
+         "<message> --header <header>\n",
+         argv[0]);
+  printf("  Decode: %s decode --input <input> --header <header>\n", argv[0]);
+  exit(1);
 }

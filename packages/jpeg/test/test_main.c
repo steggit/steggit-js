@@ -66,6 +66,58 @@ void tearDown(void) {
   // Optional: Called after every test
 }
 
+void testInvalidMode(void) {
+  const char *argv[] = {"stego", "invalid", "--input",
+                        "test/fixtures/test.png"};
+  int argc = sizeof(argv) / sizeof(argv[0]);
+  struct Config config = {0};
+  int result = parse_args(argc, (char **)argv, &config);
+  TEST_ASSERT_EQUAL(1, result);
+}
+
+void testInvalidEncodeArgs(void) {
+  const char *argv[] = {"stego", "encode", "--input", "test/fixtures/test.png"};
+  int argc = sizeof(argv) / sizeof(argv[0]);
+  struct Config config = {0};
+  int result = parse_args(argc, (char **)argv, &config);
+  TEST_ASSERT_EQUAL(1, result);
+}
+
+void testInvalidDecodeArgs(void) {
+  const char *argv[] = {"stego", "decode", "--output", "test/output/test.png"};
+  int argc = sizeof(argv) / sizeof(argv[0]);
+  struct Config config = {0};
+  int result = parse_args(argc, (char **)argv, &config);
+  TEST_ASSERT_EQUAL(1, result);
+}
+
+void testValidEncodeArgs(void) {
+  const char *argv[] = {"stego",     "encode",
+                        "--input",   "test/fixtures/test.png",
+                        "--output",  "test/output/test.png",
+                        "--message", "This is a basic message in a PNG file!",
+                        "--header",  "$$"};
+  int argc = sizeof(argv) / sizeof(argv[0]);
+  struct Config config = {0};
+  int result = parse_args(argc, (char **)argv, &config);
+  TEST_ASSERT_EQUAL(0, result);
+  TEST_ASSERT_EQUAL_STRING("encode", config.mode);
+  TEST_ASSERT_EQUAL_STRING("test/fixtures/test.png", config.input);
+  TEST_ASSERT_EQUAL_STRING("test/output/test.png", config.output);
+  TEST_ASSERT_EQUAL_STRING("This is a basic message in a PNG file!",
+                           config.message);
+}
+
+void testValidDecodeArgs(void) {
+  const char *argv[] = {"stego", "decode", "--input", "test/fixtures/test.png"};
+  int argc = sizeof(argv) / sizeof(argv[0]);
+  struct Config config = {0};
+  int result = parse_args(argc, (char **)argv, &config);
+  TEST_ASSERT_EQUAL(0, result);
+  TEST_ASSERT_EQUAL_STRING("decode", config.mode);
+  TEST_ASSERT_EQUAL_STRING("test/fixtures/test.png", config.input);
+}
+
 void testMimetype(void) {
   const char *input = "test/fixtures/test.png";
   const char *mimetype = get_mime_type(input);
@@ -201,6 +253,11 @@ int main(void) {
   atexit(cleanup);
 
   UNITY_BEGIN();
+  RUN_TEST(testInvalidMode);
+  RUN_TEST(testInvalidEncodeArgs);
+  RUN_TEST(testInvalidDecodeArgs);
+  RUN_TEST(testValidEncodeArgs);
+  RUN_TEST(testValidDecodeArgs);
   RUN_TEST(testMimetype);
   RUN_TEST(testPngBasicMessage);
   RUN_TEST(testJpegBasicMessage);
