@@ -83,7 +83,6 @@ int embed_message_in_png(const char *input_file, const char *output_file,
   printf("header: %s\n", header);
   printf("embed_message: %s\n", message);
 
-  int max_message_length = width * height * 4;
   char combined_message[strlen(header) + strlen(message) +
                         2]; // +2 for terminator and null
   strcpy(combined_message, header);
