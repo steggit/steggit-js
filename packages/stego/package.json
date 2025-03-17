@@ -1,0 +1,17 @@
+{
+  "name": "@steggit/stego",
+  "version": "1.0.0",
+  "description": "Node bindings for image steganography",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node-gyp configure build",
+    "install": "node-gyp rebuild"
+  },
+  "author": "james-cohen",
+  "license": "ISC",
+  "gypfile": true,
+  "devDependencies": {
+    "node-gyp": "^11.1.0"
+  }
+}

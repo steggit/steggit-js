@@ -3530,6 +3530,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@steggit/stego@workspace:packages/stego":
+  version: 0.0.0-use.local
+  resolution: "@steggit/stego@workspace:packages/stego"
+  dependencies:
+    node-gyp: "npm:^11.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@steggit/types@workspace:^, @steggit/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@steggit/types@workspace:packages/types"
@@ -9048,7 +9056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^11.0.0, node-gyp@npm:latest":
+"node-gyp@npm:^11.0.0, node-gyp@npm:^11.1.0, node-gyp@npm:latest":
   version: 11.1.0
   resolution: "node-gyp@npm:11.1.0"
   dependencies:

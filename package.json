@@ -25,8 +25,7 @@
   "homepage": "https://github.com/james-cohen/steggit#readme",
   "workspaces": {
     "packages": [
-      "packages/api",
-      "packages/types"
+      "packages/*"
     ]
   },
   "multi-release": {
