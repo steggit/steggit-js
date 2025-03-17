@@ -33,7 +33,7 @@ add_executable(test_runner
     ${TEST_FILES}
     src/png_utils.c
     src/jpeg_utils.c
-    src/file_utils.c
+    src/general_utils.c
 )
 
 # Include fixtures
