@@ -1,12 +1,13 @@
 #include "general_utils.h"
 #include "jpeg_utils.h"
 #include "png_utils.h"
+#include "types.h"
 #include <stdlib.h>
 #include <string.h>
 #define DEFAULT_HEADER "$$"
 
 int main(int argc, char *argv[]) {
-  struct Config config = {0};
+  Config config = {0};
   int result = parse_args(argc, argv, &config);
   if (result != 0) {
     exit(result);

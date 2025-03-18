@@ -1,4 +1,5 @@
 #include "general_utils.h"
+#include "types.h"
 #include <getopt.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -33,7 +34,7 @@ const char *get_mime_type(const char *filename) {
   return NULL; // Unsupported file type
 }
 
-int parse_args(int argc, char *argv[], struct Config *config) {
+int parse_args(int argc, char *argv[], Config *config) {
   int opt;
 
   static struct option long_options[] = {{"input", required_argument, 0, 'i'},

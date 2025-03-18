@@ -1,6 +1,7 @@
 #include "general_utils.h"
 #include "jpeg_utils.h"
 #include "png_utils.h"
+#include "types.h"
 #include "unity.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,7 +71,7 @@ void testInvalidMode(void) {
   const char *argv[] = {"stego", "invalid", "--input",
                         "test/fixtures/test.png"};
   int argc = sizeof(argv) / sizeof(argv[0]);
-  struct Config config = {0};
+  Config config = {0};
   int result = parse_args(argc, (char **)argv, &config);
   TEST_ASSERT_EQUAL(1, result);
 }
@@ -78,7 +79,7 @@ void testInvalidMode(void) {
 void testInvalidEncodeArgs(void) {
   const char *argv[] = {"stego", "encode", "--input", "test/fixtures/test.png"};
   int argc = sizeof(argv) / sizeof(argv[0]);
-  struct Config config = {0};
+  Config config = {0};
   int result = parse_args(argc, (char **)argv, &config);
   TEST_ASSERT_EQUAL(1, result);
 }
@@ -86,7 +87,7 @@ void testInvalidEncodeArgs(void) {
 void testInvalidDecodeArgs(void) {
   const char *argv[] = {"stego", "decode", "--output", "test/output/test.png"};
   int argc = sizeof(argv) / sizeof(argv[0]);
-  struct Config config = {0};
+  Config config = {0};
   int result = parse_args(argc, (char **)argv, &config);
   TEST_ASSERT_EQUAL(1, result);
 }
@@ -98,7 +99,7 @@ void testValidEncodeArgs(void) {
                         "--message", "This is a basic message in a PNG file!",
                         "--header",  "$$"};
   int argc = sizeof(argv) / sizeof(argv[0]);
-  struct Config config = {0};
+  Config config = {0};
   int result = parse_args(argc, (char **)argv, &config);
   TEST_ASSERT_EQUAL(0, result);
   TEST_ASSERT_EQUAL_STRING("encode", config.mode);
@@ -111,7 +112,7 @@ void testValidEncodeArgs(void) {
 void testValidDecodeArgs(void) {
   const char *argv[] = {"stego", "decode", "--input", "test/fixtures/test.png"};
   int argc = sizeof(argv) / sizeof(argv[0]);
-  struct Config config = {0};
+  Config config = {0};
   int result = parse_args(argc, (char **)argv, &config);
   TEST_ASSERT_EQUAL(0, result);
   TEST_ASSERT_EQUAL_STRING("decode", config.mode);
