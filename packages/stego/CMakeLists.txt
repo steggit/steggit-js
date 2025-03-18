@@ -15,10 +15,16 @@ link_directories(/opt/homebrew/opt/jpeg-turbo/lib)
 include_directories(/opt/homebrew/opt/libpng/include)
 link_directories(/opt/homebrew/opt/libpng/lib)
 
+# Include the Node API headers
+include_directories(/opt/homebrew/include/node)
+
 # Add source files
-file(GLOB SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
-file(GLOB TEST_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/*.c")
-add_executable(stego ${SRC_FILES})
+add_executable(stego
+    src/main.c
+    src/general_utils.c
+    src/jpeg_utils.c
+    src/png_utils.c
+)
 
 # Link to libjpeg and libpng
 target_link_libraries(stego PRIVATE jpeg png)
@@ -32,6 +38,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 add_subdirectory(third_party/unity)
 
 # Add test executable
+file(GLOB TEST_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/*.c")
 add_executable(test_runner
     ${TEST_FILES}
     src/png_utils.c

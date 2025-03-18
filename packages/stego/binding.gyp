@@ -3,10 +3,10 @@
     {
       "target_name": "stego", 
       "sources": [
-        "src/main.c",
         "src/general_utils.c",
         "src/jpeg_utils.c",
-        "src/png_utils.c"
+        "src/png_utils.c",
+        "src/wrapper.c"
       ],
       "include_dirs": [
         "src",

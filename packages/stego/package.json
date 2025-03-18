@@ -2,7 +2,16 @@
   "name": "@steggit/stego",
   "version": "1.0.0",
   "description": "Node bindings for image steganography",
-  "main": "index.js",
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.mjs",
+      "types": "./index.d.ts"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node-gyp configure build",
@@ -11,7 +20,10 @@
   "author": "james-cohen",
   "license": "ISC",
   "gypfile": true,
+  "type": "commonjs",
   "devDependencies": {
-    "node-gyp": "^11.1.0"
+    "@types/node": "^20.0.0",
+    "node-gyp": "^11.1.0",
+    "typescript": "^5.0.0"
   }
 }
