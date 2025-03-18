@@ -1,3 +1,4 @@
+#include <stdio.h>
 #define NAPI_VERSION 9
 #include "general_utils.h"
 #include "jpeg_utils.h"
@@ -38,17 +39,17 @@ static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
     return NULL;
   }
 
-  if (config.input == NULL) {
+  if (config.input == NULL || strlen(config.input) == 0) {
     napi_throw_error(env, NULL, "Input file is required");
     return NULL;
   }
 
-  if (config.output == NULL) {
+  if (config.output == NULL || strlen(config.output) == 0) {
     napi_throw_error(env, NULL, "Output file is required");
     return NULL;
   }
 
-  if (config.message == NULL) {
+  if (config.message == NULL || strlen(config.message) == 0) {
     napi_throw_error(env, NULL, "Message is required");
     return NULL;
   }
@@ -56,6 +57,13 @@ static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
   if (config.header == NULL) {
     config.header = DEFAULT_HEADER;
   }
+
+  FILE *file = fopen(config.input, "rb");
+  if (file == NULL) {
+    napi_throw_error(env, NULL, "Input file does not exist");
+    return NULL;
+  }
+  fclose(file);
 
   const char *mime_type = get_mime_type(config.input);
   if (strcmp(mime_type, "image/png") != 0) {
@@ -89,17 +97,17 @@ static napi_value EncodeTextJpeg(napi_env env, napi_callback_info info) {
     return NULL;
   }
 
-  if (config.input == NULL) {
+  if (config.input == NULL || strlen(config.input) == 0) {
     napi_throw_error(env, NULL, "Input file is required");
     return NULL;
   }
 
-  if (config.output == NULL) {
+  if (config.output == NULL || strlen(config.output) == 0) {
     napi_throw_error(env, NULL, "Output file is required");
     return NULL;
   }
 
-  if (config.message == NULL) {
+  if (config.message == NULL || strlen(config.message) == 0) {
     napi_throw_error(env, NULL, "Message is required");
     return NULL;
   }
@@ -107,6 +115,13 @@ static napi_value EncodeTextJpeg(napi_env env, napi_callback_info info) {
   if (config.header == NULL) {
     config.header = DEFAULT_HEADER;
   }
+
+  FILE *file = fopen(config.input, "rb");
+  if (file == NULL) {
+    napi_throw_error(env, NULL, "Input file does not exist");
+    return NULL;
+  }
+  fclose(file);
 
   const char *mime_type = get_mime_type(config.input);
   if (strcmp(mime_type, "image/jpeg") != 0) {
@@ -140,7 +155,7 @@ static napi_value DecodeTextPng(napi_env env, napi_callback_info info) {
     return NULL;
   }
 
-  if (config.input == NULL) {
+  if (config.input == NULL || strlen(config.input) == 0) {
     napi_throw_error(env, NULL, "Input file is required");
     return NULL;
   }
@@ -148,6 +163,13 @@ static napi_value DecodeTextPng(napi_env env, napi_callback_info info) {
   if (config.header == NULL) {
     config.header = DEFAULT_HEADER;
   }
+
+  FILE *file = fopen(config.input, "rb");
+  if (file == NULL) {
+    napi_throw_error(env, NULL, "Input file does not exist");
+    return NULL;
+  }
+  fclose(file);
 
   const char *mime_type = get_mime_type(config.input);
   if (strcmp(mime_type, "image/png") != 0) {
@@ -182,7 +204,7 @@ static napi_value DecodeTextJpeg(napi_env env, napi_callback_info info) {
     return NULL;
   }
 
-  if (config.input == NULL) {
+  if (config.input == NULL || strlen(config.input) == 0) {
     napi_throw_error(env, NULL, "Input file is required");
     return NULL;
   }
@@ -190,6 +212,13 @@ static napi_value DecodeTextJpeg(napi_env env, napi_callback_info info) {
   if (config.header == NULL) {
     config.header = DEFAULT_HEADER;
   }
+
+  FILE *file = fopen(config.input, "rb");
+  if (file == NULL) {
+    napi_throw_error(env, NULL, "Input file does not exist");
+    return NULL;
+  }
+  fclose(file);
 
   const char *mime_type = get_mime_type(config.input);
   if (strcmp(mime_type, "image/jpeg") != 0) {
