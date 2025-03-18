@@ -11,7 +11,8 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "index.d.ts"
+    "index.d.ts",
+    "**/*.test.ts"
   ],
   "exclude": [
     "node_modules",

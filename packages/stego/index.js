@@ -1,4 +1,4 @@
-const stego = require('./build/Release/stego');
+const stego = require('./build/Release/stego.node');
 
 // CommonJS exports
 module.exports = {
