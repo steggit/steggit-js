@@ -42,7 +42,7 @@ static void CompleteEncodeWork(napi_env env, napi_status status, void *data) {
 
   if (status == napi_ok && promise_data->result == 0) {
     napi_value result;
-    napi_get_boolean(env, true, &result);
+    napi_get_undefined(env, &result);
     napi_resolve_deferred(env, promise_data->deferred, result);
     free_config(&promise_data->config);
     napi_delete_async_work(env, promise_data->work);
