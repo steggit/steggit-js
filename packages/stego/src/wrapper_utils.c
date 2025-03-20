@@ -1,5 +1,6 @@
 #include "wrapper_utils.h"
 #include <stdlib.h>
+#define DEFAULT_HEADER "$$"
 
 int parse_napi_args(napi_env env, napi_callback_info info, Config *config) {
   napi_value args[4];
@@ -13,7 +14,13 @@ int parse_napi_args(napi_env env, napi_callback_info info, Config *config) {
   napi_value input_file_value = args[0];
   napi_value output_file_value = args[1];
   napi_value message_value = args[2];
-  napi_value header_value = args[3];
+  napi_value header_value = NULL;
+  if (argc > 3) {
+    header_value = args[3];
+  } else {
+    napi_create_string_utf8(env, DEFAULT_HEADER, NAPI_AUTO_LENGTH,
+                            &header_value);
+  }
 
   size_t input_length, output_length, message_length, header_length;
   napi_get_value_string_utf8(env, input_file_value, NULL, 0, &input_length);
@@ -42,4 +49,38 @@ int parse_napi_args(napi_env env, napi_callback_info info, Config *config) {
                              header_length + 1, NULL);
 
   return 0;
+}
+
+void free_config(Config *config) {
+  if (config == NULL) {
+    return;
+  }
+  if (config->mode != NULL) {
+    free(config->mode);
+  }
+  if (config->input != NULL) {
+    free(config->input);
+  }
+  if (config->output != NULL) {
+    free(config->output);
+  }
+  if (config->message != NULL) {
+    free(config->message);
+  }
+  if (config->header != NULL) {
+    free(config->header);
+  }
+}
+
+void handle_encode_error(napi_env env, EncodePromiseData *promise_data,
+                         const char *error_message) {
+  napi_value msg, err;
+  napi_create_string_utf8(env, error_message, NAPI_AUTO_LENGTH, &msg);
+  napi_create_error(env, NULL, msg, &err);
+  napi_reject_deferred(env, promise_data->deferred, err);
+  if (promise_data->work != NULL) {
+    napi_delete_async_work(env, promise_data->work);
+  }
+  free_config(&promise_data->config);
+  free(promise_data);
 }

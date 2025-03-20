@@ -4,6 +4,30 @@
 #include "types.h"
 #include <node_api.h>
 
+typedef struct {
+  napi_deferred deferred;
+  napi_async_work work;
+  Config config;
+  char *error;
+  int result;
+} EncodePromiseData;
+
+typedef struct {
+  napi_deferred deferred;
+  napi_async_work work;
+  Config config;
+  char *error;
+  char *output;
+} DecodePromiseData;
+
 int parse_napi_args(napi_env env, napi_callback_info info, Config *config);
+
+void free_config(Config *config);
+
+void handle_encode_error(napi_env env, EncodePromiseData *promise_data,
+                         const char *error_message);
+
+void handle_decode_error(napi_env env, DecodePromiseData *promise_data,
+                         const char *error_message);
 
 #endif // WRAPPER_UTILS_H
