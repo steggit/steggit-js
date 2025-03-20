@@ -10,7 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 
-static void ExecuteEncodeWork(napi_env env, void *data) {
+static void ExecuteWork(napi_env env, void *data) {
   PromiseData *promise_data = (PromiseData *)data;
   Config *config = &promise_data->config;
 
@@ -37,26 +37,47 @@ static void ExecuteEncodeWork(napi_env env, void *data) {
     return;
   }
 
-  if (strcmp(config->file_ext, "png") == 0) {
+  if (strcmp(config->mode, "encode") == 0 &&
+      strcmp(config->file_ext, "png") == 0) {
     promise_data->result = embed_message_in_png(
         config->input, config->output, config->message, config->header);
-  } else {
+  } else if (strcmp(config->mode, "encode") == 0 &&
+             strcmp(config->file_ext, "jpeg") == 0) {
     promise_data->result = embed_message_in_jpeg(
         config->input, config->output, config->message, config->header);
+  } else if (strcmp(config->mode, "decode") == 0 &&
+             strcmp(config->file_ext, "png") == 0) {
+    promise_data->output =
+        extract_message_from_png(config->input, config->header);
+  } else if (strcmp(config->mode, "decode") == 0 &&
+             strcmp(config->file_ext, "jpeg") == 0) {
+    promise_data->output =
+        extract_message_from_jpeg(config->input, config->header);
   }
 
-  if (promise_data->result != 0) {
+  if (strcmp(config->mode, "encode") == 0 && promise_data->result != 0) {
     promise_data->error = strdup("Failed to embed message");
     promise_data->result = -1;
+  } else if (strcmp(config->mode, "decode") == 0 &&
+             promise_data->output == NULL) {
+    promise_data->error = strdup("Failed to extract message");
+    promise_data->result = -1;
+  } else {
+    promise_data->result = 0;
   }
 }
 
-static void CompleteEncodeWork(napi_env env, napi_status status, void *data) {
+static void CompleteWork(napi_env env, napi_status status, void *data) {
   PromiseData *promise_data = (PromiseData *)data;
 
   if (status == napi_ok && promise_data->result == 0) {
     napi_value result;
-    napi_get_undefined(env, &result);
+    if (promise_data->output != NULL) {
+      napi_create_string_utf8(env, promise_data->output,
+                              strlen(promise_data->output), &result);
+    } else {
+      napi_get_undefined(env, &result);
+    }
     napi_resolve_deferred(env, promise_data->deferred, result);
     free_config(&promise_data->config);
     napi_delete_async_work(env, promise_data->work);
@@ -70,7 +91,7 @@ static void CompleteEncodeWork(napi_env env, napi_status status, void *data) {
   }
 }
 
-static napi_value HandleEncodeWork(napi_env env, PromiseData *promise_data) {
+static napi_value HandleAsyncWork(napi_env env, PromiseData *promise_data) {
   napi_value promise;
   napi_status status =
       napi_create_promise(env, &promise_data->deferred, &promise);
@@ -88,31 +109,33 @@ static napi_value HandleEncodeWork(napi_env env, PromiseData *promise_data) {
     return promise;
   }
 
-  if (promise_data->config.output == NULL ||
-      strlen(promise_data->config.output) == 0) {
+  if (strcmp(promise_data->config.mode, "encode") == 0 &&
+      (promise_data->config.output == NULL ||
+       strlen(promise_data->config.output) == 0)) {
     handle_encode_error(env, promise_data, "Output file is required");
     return promise;
   }
 
-  if (promise_data->config.message == NULL ||
-      strlen(promise_data->config.message) == 0) {
+  if (strcmp(promise_data->config.mode, "encode") == 0 &&
+      (promise_data->config.message == NULL ||
+       strlen(promise_data->config.message) == 0)) {
     handle_encode_error(env, promise_data, "Message is required");
     return promise;
   }
 
   // Create a string to identify the async work
   napi_value work_name;
-  status = napi_create_string_utf8(env, "EncodeTextPngWork", NAPI_AUTO_LENGTH,
-                                   &work_name);
+  status =
+      napi_create_string_utf8(env, "AsyncWork", NAPI_AUTO_LENGTH, &work_name);
   if (status != napi_ok) {
     handle_encode_error(env, promise_data, "Unable to create work name");
     return promise;
   }
 
   // Create async work
-  status = napi_create_async_work(env, NULL, work_name, ExecuteEncodeWork,
-                                  CompleteEncodeWork, promise_data,
-                                  &promise_data->work);
+  status =
+      napi_create_async_work(env, NULL, work_name, ExecuteWork, CompleteWork,
+                             promise_data, &promise_data->work);
   if (status != napi_ok) {
     handle_encode_error(env, promise_data, "Unable to create async work");
     return promise;
@@ -144,7 +167,7 @@ static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
     free(promise_data);
     return NULL;
   }
-  return HandleEncodeWork(env, promise_data);
+  return HandleAsyncWork(env, promise_data);
 }
 
 static napi_value EncodeTextJpeg(napi_env env, napi_callback_info info) {
@@ -163,97 +186,45 @@ static napi_value EncodeTextJpeg(napi_env env, napi_callback_info info) {
     free(promise_data);
     return NULL;
   }
-  return HandleEncodeWork(env, promise_data);
+  return HandleAsyncWork(env, promise_data);
 }
 
 static napi_value DecodeTextPng(napi_env env, napi_callback_info info) {
-  Config config;
-  config.mode = "decode";
-  if (parse_napi_args(env, info, &config) != 0) {
+  PromiseData *promise_data = (PromiseData *)malloc(sizeof(PromiseData));
+  if (promise_data == NULL) {
+    napi_throw_error(env, NULL, "Failed to allocate memory");
     return NULL;
   }
+  memset(&promise_data->config, 0, sizeof(Config));
+  promise_data->config.mode = strdup("encode");
+  promise_data->config.file_ext = strdup("png");
+  promise_data->result = 0;
 
-  if (config.input == NULL || strlen(config.input) == 0) {
-    napi_throw_error(env, NULL, "Input file is required");
+  if (parse_napi_args(env, info, &promise_data->config) != 0) {
+    free_config(&promise_data->config);
+    free(promise_data);
     return NULL;
   }
-
-  FILE *file = fopen(config.input, "rb");
-  if (file == NULL) {
-    napi_throw_error(env, NULL, "Input file does not exist");
-    return NULL;
-  }
-  fclose(file);
-
-  const char *mime_type = get_mime_type(config.input);
-  if (strcmp(mime_type, "image/png") != 0) {
-    napi_throw_error(env, NULL, "Input file must be a PNG image");
-    return NULL;
-  }
-
-  char *message = extract_message_from_png(config.input, config.header);
-  if (message == NULL) {
-    napi_throw_error(env, NULL, "Failed to extract message");
-    return NULL;
-  }
-
-  napi_value return_value;
-  napi_status status =
-      napi_create_string_utf8(env, message, strlen(message), &return_value);
-  if (status != napi_ok) {
-    napi_throw_error(env, NULL, "Failed to create return value");
-    return NULL;
-  }
-
-  free(message);
-  free_config(&config);
-
-  return return_value;
+  return HandleAsyncWork(env, promise_data);
 }
 
 static napi_value DecodeTextJpeg(napi_env env, napi_callback_info info) {
-  Config config;
-  config.mode = "decode";
-  if (parse_napi_args(env, info, &config) != 0) {
+  PromiseData *promise_data = (PromiseData *)malloc(sizeof(PromiseData));
+  if (promise_data == NULL) {
+    napi_throw_error(env, NULL, "Failed to allocate memory");
     return NULL;
   }
+  memset(&promise_data->config, 0, sizeof(Config));
+  promise_data->config.mode = strdup("decode");
+  promise_data->config.file_ext = strdup("jpeg");
+  promise_data->result = 0;
 
-  if (config.input == NULL || strlen(config.input) == 0) {
-    napi_throw_error(env, NULL, "Input file is required");
+  if (parse_napi_args(env, info, &promise_data->config) != 0) {
+    free_config(&promise_data->config);
+    free(promise_data);
     return NULL;
   }
-
-  FILE *file = fopen(config.input, "rb");
-  if (file == NULL) {
-    napi_throw_error(env, NULL, "Input file does not exist");
-    return NULL;
-  }
-  fclose(file);
-
-  const char *mime_type = get_mime_type(config.input);
-  if (strcmp(mime_type, "image/jpeg") != 0) {
-    napi_throw_error(env, NULL, "Input file must be a JPEG image");
-    return NULL;
-  }
-
-  char *message = extract_message_from_jpeg(config.input, config.header);
-  if (message == NULL) {
-    napi_throw_error(env, NULL, "Failed to extract message");
-    return NULL;
-  }
-
-  napi_value return_value;
-  napi_status status =
-      napi_create_string_utf8(env, message, strlen(message), &return_value);
-  if (status != napi_ok) {
-    napi_throw_error(env, NULL, "Failed to create return value");
-    return NULL;
-  }
-
-  free(message);
-  free_config(&config);
-
-  return return_value;
+  return HandleAsyncWork(env, promise_data);
 }
 
 napi_value Init(napi_env env, napi_value exports) {
