@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 static void ExecuteEncodeWork(napi_env env, void *data) {
-  EncodePromiseData *promise_data = (EncodePromiseData *)data;
+  PromiseData *promise_data = (PromiseData *)data;
   Config *config = &promise_data->config;
 
   FILE *file = fopen(config->input, "rb");
@@ -52,7 +52,7 @@ static void ExecuteEncodeWork(napi_env env, void *data) {
 }
 
 static void CompleteEncodeWork(napi_env env, napi_status status, void *data) {
-  EncodePromiseData *promise_data = (EncodePromiseData *)data;
+  PromiseData *promise_data = (PromiseData *)data;
 
   if (status == napi_ok && promise_data->result == 0) {
     napi_value result;
@@ -70,8 +70,7 @@ static void CompleteEncodeWork(napi_env env, napi_status status, void *data) {
   }
 }
 
-static napi_value HandleEncodeWork(napi_env env,
-                                   EncodePromiseData *promise_data) {
+static napi_value HandleEncodeWork(napi_env env, PromiseData *promise_data) {
   napi_value promise;
   napi_status status =
       napi_create_promise(env, &promise_data->deferred, &promise);
@@ -130,8 +129,7 @@ static napi_value HandleEncodeWork(napi_env env,
 }
 
 static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
-  EncodePromiseData *promise_data =
-      (EncodePromiseData *)malloc(sizeof(EncodePromiseData));
+  PromiseData *promise_data = (PromiseData *)malloc(sizeof(PromiseData));
   if (promise_data == NULL) {
     napi_throw_error(env, NULL, "Failed to allocate memory");
     return NULL;
@@ -150,8 +148,7 @@ static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
 }
 
 static napi_value EncodeTextJpeg(napi_env env, napi_callback_info info) {
-  EncodePromiseData *promise_data =
-      (EncodePromiseData *)malloc(sizeof(EncodePromiseData));
+  PromiseData *promise_data = (PromiseData *)malloc(sizeof(PromiseData));
   if (promise_data == NULL) {
     napi_throw_error(env, NULL, "Failed to allocate memory");
     return NULL;

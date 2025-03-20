@@ -75,7 +75,7 @@ void free_config(Config *config) {
   }
 }
 
-void handle_encode_error(napi_env env, EncodePromiseData *promise_data,
+void handle_encode_error(napi_env env, PromiseData *promise_data,
                          const char *error_message) {
   napi_value msg, err;
   napi_create_string_utf8(env, error_message, NAPI_AUTO_LENGTH, &msg);
