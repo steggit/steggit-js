@@ -70,6 +70,9 @@ void free_config(Config *config) {
   if (config->header != NULL) {
     free(config->header);
   }
+  if (config->file_ext != NULL) {
+    free(config->file_ext);
+  }
 }
 
 void handle_encode_error(napi_env env, EncodePromiseData *promise_data,

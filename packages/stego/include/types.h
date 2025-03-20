@@ -3,6 +3,7 @@
 
 typedef struct {
   char *mode;
+  char *file_ext;
   char *input;
   char *output;
   char *message;

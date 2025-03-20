@@ -10,7 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 
-static void ExecutePngEncodeWork(napi_env env, void *data) {
+static void ExecuteEncodeWork(napi_env env, void *data) {
   EncodePromiseData *promise_data = (EncodePromiseData *)data;
   Config *config = &promise_data->config;
 
@@ -23,14 +23,28 @@ static void ExecutePngEncodeWork(napi_env env, void *data) {
   fclose(file);
 
   const char *mime_type = get_mime_type(config->input);
-  if (strcmp(mime_type, "image/png") != 0) {
+  if (strcmp(config->file_ext, "png") == 0 &&
+      strcmp(mime_type, "image/png") != 0) {
     promise_data->error = strdup("Input file must be a PNG image");
     promise_data->result = -1;
     return;
   }
 
-  promise_data->result = embed_message_in_png(config->input, config->output,
-                                              config->message, config->header);
+  if (strcmp(config->file_ext, "jpeg") == 0 &&
+      strcmp(mime_type, "image/jpeg") != 0) {
+    promise_data->error = strdup("Input file must be a JPEG image");
+    promise_data->result = -1;
+    return;
+  }
+
+  if (strcmp(config->file_ext, "png") == 0) {
+    promise_data->result = embed_message_in_png(
+        config->input, config->output, config->message, config->header);
+  } else {
+    promise_data->result = embed_message_in_jpeg(
+        config->input, config->output, config->message, config->header);
+  }
+
   if (promise_data->result != 0) {
     promise_data->error = strdup("Failed to embed message");
     promise_data->result = -1;
@@ -56,23 +70,9 @@ static void CompleteEncodeWork(napi_env env, napi_status status, void *data) {
   }
 }
 
-static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
+static napi_value HandleEncodeWork(napi_env env,
+                                   EncodePromiseData *promise_data) {
   napi_value promise;
-  EncodePromiseData *promise_data =
-      (EncodePromiseData *)malloc(sizeof(EncodePromiseData));
-  if (promise_data == NULL) {
-    napi_throw_error(env, NULL, "Failed to allocate memory");
-    return NULL;
-  }
-  memset(&promise_data->config, 0, sizeof(Config));
-  promise_data->config.mode = strdup("encode");
-  promise_data->result = 0;
-
-  if (parse_napi_args(env, info, &promise_data->config) != 0) {
-    free_config(&promise_data->config);
-    free(promise_data);
-    return NULL;
-  }
   napi_status status =
       napi_create_promise(env, &promise_data->deferred, &promise);
   if (status != napi_ok) {
@@ -111,7 +111,7 @@ static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
   }
 
   // Create async work
-  status = napi_create_async_work(env, NULL, work_name, ExecutePngEncodeWork,
+  status = napi_create_async_work(env, NULL, work_name, ExecuteEncodeWork,
                                   CompleteEncodeWork, promise_data,
                                   &promise_data->work);
   if (status != napi_ok) {
@@ -129,58 +129,44 @@ static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
   return promise;
 }
 
+static napi_value EncodeTextPng(napi_env env, napi_callback_info info) {
+  EncodePromiseData *promise_data =
+      (EncodePromiseData *)malloc(sizeof(EncodePromiseData));
+  if (promise_data == NULL) {
+    napi_throw_error(env, NULL, "Failed to allocate memory");
+    return NULL;
+  }
+  memset(&promise_data->config, 0, sizeof(Config));
+  promise_data->config.mode = strdup("encode");
+  promise_data->config.file_ext = strdup("png");
+  promise_data->result = 0;
+
+  if (parse_napi_args(env, info, &promise_data->config) != 0) {
+    free_config(&promise_data->config);
+    free(promise_data);
+    return NULL;
+  }
+  return HandleEncodeWork(env, promise_data);
+}
+
 static napi_value EncodeTextJpeg(napi_env env, napi_callback_info info) {
-  Config config;
-  config.mode = "encode";
-  if (parse_napi_args(env, info, &config) != 0) {
+  EncodePromiseData *promise_data =
+      (EncodePromiseData *)malloc(sizeof(EncodePromiseData));
+  if (promise_data == NULL) {
+    napi_throw_error(env, NULL, "Failed to allocate memory");
     return NULL;
   }
+  memset(&promise_data->config, 0, sizeof(Config));
+  promise_data->config.mode = strdup("encode");
+  promise_data->config.file_ext = strdup("jpeg");
+  promise_data->result = 0;
 
-  if (config.input == NULL || strlen(config.input) == 0) {
-    napi_throw_error(env, NULL, "Input file is required");
+  if (parse_napi_args(env, info, &promise_data->config) != 0) {
+    free_config(&promise_data->config);
+    free(promise_data);
     return NULL;
   }
-
-  if (config.output == NULL || strlen(config.output) == 0) {
-    napi_throw_error(env, NULL, "Output file is required");
-    return NULL;
-  }
-
-  if (config.message == NULL || strlen(config.message) == 0) {
-    napi_throw_error(env, NULL, "Message is required");
-    return NULL;
-  }
-
-  FILE *file = fopen(config.input, "rb");
-  if (file == NULL) {
-    napi_throw_error(env, NULL, "Input file does not exist");
-    return NULL;
-  }
-  fclose(file);
-
-  const char *mime_type = get_mime_type(config.input);
-  if (strcmp(mime_type, "image/jpeg") != 0) {
-    napi_throw_error(env, NULL, "Input file must be a JPEG image");
-    return NULL;
-  }
-
-  int result = embed_message_in_jpeg(config.input, config.output,
-                                     config.message, config.header);
-  if (result != 0) {
-    napi_throw_error(env, NULL, "Failed to embed message");
-    return NULL;
-  }
-
-  napi_value return_value;
-  napi_status status = napi_get_boolean(env, true, &return_value);
-  if (status != napi_ok) {
-    napi_throw_error(env, NULL, "Failed to create return value");
-    return NULL;
-  }
-
-  free_config(&config);
-
-  return return_value;
+  return HandleEncodeWork(env, promise_data);
 }
 
 static napi_value DecodeTextPng(napi_env env, napi_callback_info info) {
