@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { encodeTextPng, encodeTextJpeg } from '../index';
+import { encodeTextPng, encodeTextJpeg, decodeTextPng, decodeTextJpeg } from '../index';
 
 const getInputPath = (name: string) => {
   return path.join(__dirname, '..', '__fixtures__', name);
@@ -52,7 +52,19 @@ describe(encodeTextPng.name, () => {
     const inputPath = getInputPath('test.png');
     const message = 'Hello, world!';
     await expect(encodeTextPng(inputPath, pngOutputPath, message)).resolves.toBeUndefined();
+    const decodedMessage = await decodeTextPng(pngOutputPath);
+    expect(decodedMessage).toBe(message);
   });
+
+  it('should encode and decode text in a PNG image with custom header', async () => {
+    const inputPath = getInputPath('test.png');
+    const message = 'Hello, world!';
+    const header = 'custom-header';
+    await expect(encodeTextPng(inputPath, pngOutputPath, message, header)).resolves.toBeUndefined();
+    const decodedMessage = await decodeTextPng(pngOutputPath, header);
+    expect(decodedMessage).toBe(message);
+  });
+
 });
 
 describe(encodeTextJpeg.name, () => {
@@ -80,5 +92,16 @@ describe(encodeTextJpeg.name, () => {
     const inputPath = getInputPath('test.jpg');
     const message = 'Hello, world!';
     await expect(encodeTextJpeg(inputPath, jpegOutputPath, message)).resolves.toBeUndefined();
+    const decodedMessage = await decodeTextJpeg(jpegOutputPath);
+    expect(decodedMessage).toBe(message);
+  });
+
+  it('should encode and decode text in a JPEG image with custom header', async () => {
+    const inputPath = getInputPath('test.jpg');
+    const message = 'Hello, world!';
+    const header = 'abcde12345';
+    await expect(encodeTextJpeg(inputPath, jpegOutputPath, message, header)).resolves.toBeUndefined();
+    const decodedMessage = await decodeTextJpeg(jpegOutputPath, header);
+    expect(decodedMessage).toBe(message);
   });
 });
