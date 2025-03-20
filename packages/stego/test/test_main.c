@@ -138,11 +138,14 @@ void testPngBasicMessage(void) {
   const char *output = "test/output/basic_message.png";
   const char *message = "This is a basic message in a PNG file!";
   const char *header = "$$";
+  char *error_message = NULL;
 
-  int embed_result = embed_message_in_png(input, output, message, header);
+  int embed_result =
+      embed_message_in_png(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  char *extract_result = extract_message_from_png(output, header);
+  char *extract_result =
+      extract_message_from_png(output, header, &error_message);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
 }
@@ -152,11 +155,13 @@ void testJpegBasicMessage(void) {
   const char *output = "test/output/basic_message.jpg";
   const char *message = "This is a simple JPEG test!";
   const char *header = "$$";
-
-  int embed_result = embed_message_in_jpeg(input, output, message, header);
+  char *error_message = NULL;
+  int embed_result =
+      embed_message_in_jpeg(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  char *extract_result = extract_message_from_jpeg(output, header);
+  char *extract_result =
+      extract_message_from_jpeg(output, header, &error_message);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
 }
@@ -166,16 +171,20 @@ void testPngCustomHeader(void) {
   const char *output = "test/output/custom_header.png";
   const char *message = "This is a different message";
   const char *header = "CUSTOM";
+  char *error_message = NULL;
 
-  int embed_result = embed_message_in_png(input, output, message, header);
+  int embed_result =
+      embed_message_in_png(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  char *extract_result = extract_message_from_png(output, header);
+  char *extract_result =
+      extract_message_from_png(output, header, &error_message);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
 
   // Test with incorrect header
-  char *extract_result_incorrect = extract_message_from_png(output, "WRONG");
+  char *extract_result_incorrect =
+      extract_message_from_png(output, "WRONG", &error_message);
   TEST_ASSERT_NULL(extract_result_incorrect);
 }
 
@@ -184,16 +193,20 @@ void testJpegCustomHeader(void) {
   const char *output = "test/output/custom_header.jpg";
   const char *message = "This is a different message";
   const char *header = "CUSTOM";
+  char *error_message = NULL;
 
-  int embed_result = embed_message_in_jpeg(input, output, message, header);
+  int embed_result =
+      embed_message_in_jpeg(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  char *extract_result = extract_message_from_jpeg(output, header);
+  char *extract_result =
+      extract_message_from_jpeg(output, header, &error_message);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
 
   // Test with incorrect header
-  char *extract_result_incorrect = extract_message_from_jpeg(output, "WRONG");
+  char *extract_result_incorrect =
+      extract_message_from_jpeg(output, "WRONG", &error_message);
   TEST_ASSERT_NULL(extract_result_incorrect);
 }
 
@@ -202,11 +215,14 @@ void testTransparentPng(void) {
   const char *output = "test/output/transparent_message.png";
   const char *message = "This is a message embedded in a transparent PNG!";
   const char *header = "$$";
+  char *error_message = NULL;
 
-  int embed_result = embed_message_in_png(input, output, message, header);
+  int embed_result =
+      embed_message_in_png(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(0, embed_result);
 
-  char *extract_result = extract_message_from_png(output, header);
+  char *extract_result =
+      extract_message_from_png(output, header, &error_message);
   TEST_ASSERT_EQUAL_STRING(message, extract_result);
   free(extract_result);
 }
@@ -218,8 +234,9 @@ void testTooLargeMessagePng(void) {
       "This is a message that is too large to embed in a PNG file. I have to "
       "add some more text to make it longer to ensure that the test fails.";
   const char *header = "$$";
-
-  int embed_result = embed_message_in_png(input, output, message, header);
+  char *error_message = NULL;
+  int embed_result =
+      embed_message_in_png(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(-1, embed_result);
 
   // Verify that the output file doesn't exist since embedding failed
@@ -237,8 +254,10 @@ void testTooLargeMessageJpeg(void) {
       "This is a message that is too large to embed in a JPEG file. I have to "
       "add some more text to make it longer to ensure that the test fails.";
   const char *header = "$$";
+  char *error_message = NULL;
 
-  int embed_result = embed_message_in_jpeg(input, output, message, header);
+  int embed_result =
+      embed_message_in_jpeg(input, output, message, header, &error_message);
   TEST_ASSERT_EQUAL(-1, embed_result);
 
   // Verify that the output file doesn't exist since embedding failed

@@ -51,7 +51,7 @@ describe('encode png - error handling', () => {
   it('should throw if message is too long for image to fit', async () => {
     const inputPath = getInputPath('tiny_test.png');
     const message = 'Hello, world!'.repeat(1000);
-    await expect(encodeTextPng(inputPath, pngOutputPath, message)).rejects.toThrow('Failed to embed message');
+    await expect(encodeTextPng(inputPath, pngOutputPath, message)).rejects.toThrow(/Message too large for image! Available space = \d+ bits, message size = \d+ bits/);
   });
 });
 
@@ -79,7 +79,7 @@ describe('encode jpeg - error handling', () => {
   it('should throw if message is too long for image to fit', async () => {
     const inputPath = getInputPath('tiny_test.jpg');
     const message = 'Hello, world!'.repeat(1000);
-    await expect(encodeTextJpeg(inputPath, jpegOutputPath, message)).rejects.toThrow('Failed to embed message');
+    await expect(encodeTextJpeg(inputPath, jpegOutputPath, message)).rejects.toThrow(/Message too large for image! Available space = \d+ bits, message size = \d+ bits/);
   });
 });
 
@@ -97,7 +97,7 @@ describe('decode png - error handling', () => {
   });
 
   it('should throw if no message found', async () => {
-    await expect(decodeTextPng(getInputPath('test.png'))).rejects.toThrow('Failed to extract message');
+    await expect(decodeTextPng(getInputPath('test.png'))).rejects.toThrow('Failed to decode message');
   });
 });
 
@@ -115,7 +115,7 @@ describe('decode jpeg - error handling', () => {
   });
 
   it('should throw if no message found', async () => {
-    await expect(decodeTextJpeg(getInputPath('test.jpg'))).rejects.toThrow('Failed to extract message');
+    await expect(decodeTextJpeg(getInputPath('test.jpg'))).rejects.toThrow('Failed to decode message');
   });
 });
 
@@ -150,7 +150,7 @@ describe('png - full process', () => {
     const message = 'Hello, world!';
     const header = 'abcde12345';
     await expect(encodeTextPng(inputPath, pngOutputPath, message, header)).resolves.toBeUndefined();
-    await expect(decodeTextPng(pngOutputPath, 'different-header')).rejects.toThrow('Failed to extract message');
+    await expect(decodeTextPng(pngOutputPath, 'different-header')).rejects.toThrow('Failed to decode message');
   });
 });
 
@@ -177,6 +177,6 @@ describe('jpeg - full process', () => {
     const message = 'Hello, world!';
     const header = 'abcde12345';
     await expect(encodeTextJpeg(inputPath, jpegOutputPath, message, header)).resolves.toBeUndefined();
-    await expect(decodeTextJpeg(jpegOutputPath, '54321edcba')).rejects.toThrow('Failed to extract message');
+    await expect(decodeTextJpeg(jpegOutputPath, '54321edcba')).rejects.toThrow('Failed to decode message');
   });
 });

@@ -26,39 +26,46 @@ int main(int argc, char *argv[]) {
 
   if (strcmp(config.mode, "decode") == 0) {
     char *message = NULL;
-
+    char *error_message = NULL;
     if (strcmp(mime_type, "image/jpeg") == 0) {
-      message = extract_message_from_jpeg(config.input, config.header);
+      message = extract_message_from_jpeg(config.input, config.header,
+                                          &error_message);
     } else {
-      message = extract_message_from_png(config.input, config.header);
+      message =
+          extract_message_from_png(config.input, config.header, &error_message);
     }
 
     if (message == NULL) {
-      fprintf(stderr, "Failed to extract message\n");
+      fprintf(stderr, "%s\n", error_message);
+      free(error_message);
       exit(1);
     }
 
     printf("%s\n", message);
     free(message);
+    free(error_message);
     exit(0);
   }
 
   if (strcmp(config.mode, "encode") == 0) {
     int result = -1;
-
+    char *error_message = NULL;
     if (strcmp(mime_type, "image/jpeg") == 0) {
-      result = embed_message_in_jpeg(config.input, config.output,
-                                     config.message, config.header);
+      result =
+          embed_message_in_jpeg(config.input, config.output, config.message,
+                                config.header, &error_message);
     } else {
       result = embed_message_in_png(config.input, config.output, config.message,
-                                    config.header);
+                                    config.header, &error_message);
     }
 
     if (result != 0) {
-      fprintf(stderr, "Failed to embed message\n");
+      fprintf(stderr, "%s\n", error_message);
+      free(error_message);
       exit(1);
     }
 
+    free(error_message);
     exit(0);
   }
 

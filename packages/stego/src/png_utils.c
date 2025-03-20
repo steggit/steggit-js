@@ -13,10 +13,11 @@ static void handle_png_error(png_structp png_ptr, png_const_charp error_msg) {
 }
 
 int embed_message_in_png(const char *input_file, const char *output_file,
-                         const char *message, const char *header) {
+                         const char *message, const char *header,
+                         char **error_message) {
   FILE *fp = fopen(input_file, "rb");
   if (!fp) {
-    fprintf(stderr, "Failed to open input file\n");
+    *error_message = strdup("Failed to open input file");
     return -1;
   }
 
@@ -24,6 +25,7 @@ int embed_message_in_png(const char *input_file, const char *output_file,
                                            handle_png_error, NULL);
   if (!png) {
     fclose(fp);
+    *error_message = strdup("Failed to create read struct");
     return -1;
   }
 
@@ -31,12 +33,14 @@ int embed_message_in_png(const char *input_file, const char *output_file,
   if (!info) {
     png_destroy_read_struct(&png, NULL, NULL);
     fclose(fp);
+    *error_message = strdup("Failed to create info struct");
     return -1;
   }
 
   if (setjmp(png_jmpbuf(png))) {
     png_destroy_read_struct(&png, &info, NULL);
     fclose(fp);
+    *error_message = strdup("Failed to setjmp");
     return -1;
   }
 
@@ -100,7 +104,12 @@ int embed_message_in_png(const char *input_file, const char *output_file,
          required_bits);
 
   if (required_bits > available_bits) {
-    fprintf(stderr, "Message too large for image\n");
+    char error_buf[256];
+    snprintf(error_buf, sizeof(error_buf),
+             "Message too large for image! Available space = %zu bits, message "
+             "size = %zu bits",
+             available_bits, required_bits);
+    *error_message = strdup(error_buf);
     return -1;
   }
 
@@ -143,10 +152,11 @@ int embed_message_in_png(const char *input_file, const char *output_file,
   return 0;
 }
 
-char *extract_message_from_png(const char *input_file, const char *header) {
+char *extract_message_from_png(const char *input_file, const char *header,
+                               char **error_message) {
   FILE *fp = fopen(input_file, "rb");
   if (!fp) {
-    fprintf(stderr, "Failed to open input file\n");
+    *error_message = strdup("Failed to open input file");
     return NULL;
   }
 
@@ -154,6 +164,7 @@ char *extract_message_from_png(const char *input_file, const char *header) {
                                            handle_png_error, NULL);
   if (!png) {
     fclose(fp);
+    *error_message = strdup("Failed to create read struct");
     return NULL;
   }
 
@@ -161,12 +172,14 @@ char *extract_message_from_png(const char *input_file, const char *header) {
   if (!info) {
     png_destroy_read_struct(&png, NULL, NULL);
     fclose(fp);
+    *error_message = strdup("Failed to create info struct");
     return NULL;
   }
 
   if (setjmp(png_jmpbuf(png))) {
     png_destroy_read_struct(&png, &info, NULL);
     fclose(fp);
+    *error_message = strdup("Failed to setjmp");
     return NULL;
   }
 
@@ -224,7 +237,7 @@ char *extract_message_from_png(const char *input_file, const char *header) {
 
   char *buffer = (char *)malloc(MIN(max_message_length, MAX_BUFFER_SIZE));
   if (buffer == NULL) {
-    fprintf(stderr, "Memory allocation failed\n");
+    *error_message = strdup("Memory allocation failed");
     for (int y = 0; y < height; y++) {
       free(row_pointers[y]);
     }

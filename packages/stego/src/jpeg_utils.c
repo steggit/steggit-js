@@ -27,7 +27,8 @@ void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 
 // Extract message from the DCT coefficients
 char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
-                      JDIMENSION height_in_blocks, const char *header) {
+                      JDIMENSION height_in_blocks, const char *header,
+                      char **error_message) {
   unsigned char current_byte = 0;
   size_t bits_collected = 0;
   size_t message_length = 0;
@@ -40,7 +41,7 @@ char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 
   char *buffer = (char *)malloc(MIN(max_message_length, MAX_BUFFER_SIZE));
   if (buffer == NULL) {
-    fprintf(stderr, "Memory allocation failed\n");
+    *error_message = strdup("Memory allocation failed");
     return NULL;
   }
 
@@ -91,7 +92,6 @@ char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
   if (!header_found && header_length > 0) {
     // Header not found, return empty string
     free(buffer);
-    printf("Header not found — discarding extracted message\n");
     return NULL;
   }
 
@@ -99,7 +99,8 @@ char *extract_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
 }
 
 int embed_message_in_jpeg(const char *input_path, const char *output_path,
-                          const char *message, const char *header) {
+                          const char *message, const char *header,
+                          char **error_message) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_compress_struct dstinfo;
   struct jpeg_error_mgr jerr;
@@ -108,7 +109,7 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
 
   infile = fopen(input_path, "rb");
   if (!infile) {
-    perror("Failed to open input file");
+    *error_message = strdup("Failed to open input file");
     return -1;
   }
 
@@ -145,10 +146,12 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
          combined_bits);
 
   if (combined_bits > available_bits) {
-    fprintf(stderr,
-            "Error: Message too large! Max length = %zu bits, but total "
-            "length = %zu bits\n",
-            available_bits, combined_bits);
+    char error_buf[256];
+    snprintf(error_buf, sizeof(error_buf),
+             "Message too large for image! Available space = %zu bits, message "
+             "size = %zu bits",
+             available_bits, combined_bits);
+    *error_message = strdup(error_buf);
     jpeg_destroy_decompress(&cinfo);
     fclose(infile);
     return -1;
@@ -194,7 +197,8 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   return 0;
 }
 
-char *extract_message_from_jpeg(const char *input_path, const char *header) {
+char *extract_message_from_jpeg(const char *input_path, const char *header,
+                                char **error_message) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
   FILE *infile = NULL;
@@ -202,7 +206,7 @@ char *extract_message_from_jpeg(const char *input_path, const char *header) {
 
   infile = fopen(input_path, "rb");
   if (!infile) {
-    perror("Failed to open input file");
+    *error_message = strdup("Failed to open input file");
     return NULL;
   }
 
@@ -225,8 +229,8 @@ char *extract_message_from_jpeg(const char *input_path, const char *header) {
     JBLOCKARRAY row_ptrs = (cinfo.mem->access_virt_barray)(
         (j_common_ptr)&cinfo, coef_arrays[0], row, 1, FALSE);
 
-    message =
-        extract_message(row_ptrs, width_in_blocks, height_in_blocks, header);
+    message = extract_message(row_ptrs, width_in_blocks, height_in_blocks,
+                              header, error_message);
 
     if (message != NULL && message[0] != '\0') {
       break;

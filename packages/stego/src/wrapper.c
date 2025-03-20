@@ -39,28 +39,33 @@ static void ExecuteWork(napi_env env, void *data) {
 
   if (strcmp(config->mode, "encode") == 0 &&
       strcmp(config->file_ext, "png") == 0) {
-    promise_data->result = embed_message_in_png(
-        config->input, config->output, config->message, config->header);
+    promise_data->result =
+        embed_message_in_png(config->input, config->output, config->message,
+                             config->header, &promise_data->error);
   } else if (strcmp(config->mode, "encode") == 0 &&
              strcmp(config->file_ext, "jpeg") == 0) {
-    promise_data->result = embed_message_in_jpeg(
-        config->input, config->output, config->message, config->header);
+    promise_data->result =
+        embed_message_in_jpeg(config->input, config->output, config->message,
+                              config->header, &promise_data->error);
   } else if (strcmp(config->mode, "decode") == 0 &&
              strcmp(config->file_ext, "png") == 0) {
-    promise_data->output =
-        extract_message_from_png(config->input, config->header);
+    promise_data->output = extract_message_from_png(
+        config->input, config->header, &promise_data->error);
   } else if (strcmp(config->mode, "decode") == 0 &&
              strcmp(config->file_ext, "jpeg") == 0) {
-    promise_data->output =
-        extract_message_from_jpeg(config->input, config->header);
+    promise_data->output = extract_message_from_jpeg(
+        config->input, config->header, &promise_data->error);
   }
 
-  if (strcmp(config->mode, "encode") == 0 && promise_data->result != 0) {
-    promise_data->error = strdup("Failed to embed message");
+  bool embed_failed =
+      strcmp(config->mode, "encode") == 0 && promise_data->result != 0;
+  bool decode_failed =
+      strcmp(config->mode, "decode") == 0 && promise_data->output == NULL;
+
+  if (decode_failed) {
+    promise_data->error = strdup("Failed to decode message");
     promise_data->result = -1;
-  } else if (strcmp(config->mode, "decode") == 0 &&
-             promise_data->output == NULL) {
-    promise_data->error = strdup("Failed to extract message");
+  } else if (embed_failed) {
     promise_data->result = -1;
   } else {
     promise_data->result = 0;
