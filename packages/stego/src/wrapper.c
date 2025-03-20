@@ -125,8 +125,8 @@ static napi_value HandleAsyncWork(napi_env env, PromiseData *promise_data) {
 
   // Create a string to identify the async work
   napi_value work_name;
-  status =
-      napi_create_string_utf8(env, "AsyncWork", NAPI_AUTO_LENGTH, &work_name);
+  status = napi_create_string_utf8(env, "AsyncWork", strlen("AsyncWork"),
+                                   &work_name);
   if (status != napi_ok) {
     handle_encode_error(env, promise_data, "Unable to create work name");
     return promise;
@@ -196,7 +196,7 @@ static napi_value DecodeTextPng(napi_env env, napi_callback_info info) {
     return NULL;
   }
   memset(&promise_data->config, 0, sizeof(Config));
-  promise_data->config.mode = strdup("encode");
+  promise_data->config.mode = strdup("decode");
   promise_data->config.file_ext = strdup("png");
   promise_data->result = 0;
 
@@ -242,8 +242,9 @@ napi_value Init(napi_env env, napi_value exports) {
 
   int num_functions = sizeof(functions) / sizeof(functions[0]);
   for (int i = 0; i < num_functions; i++) {
-    status = napi_create_function(env, functions[i].name, NAPI_AUTO_LENGTH,
-                                  functions[i].handler, NULL, &fn);
+    status =
+        napi_create_function(env, functions[i].name, strlen(functions[i].name),
+                             functions[i].handler, NULL, &fn);
     if (status != napi_ok) {
       char error_message[100];
       snprintf(error_message, sizeof(error_message),

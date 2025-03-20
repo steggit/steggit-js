@@ -1,5 +1,6 @@
 #include "wrapper_utils.h"
 #include <stdlib.h>
+#include <string.h>
 #define DEFAULT_HEADER "$$"
 
 int parse_napi_args(napi_env env, napi_callback_info info, Config *config) {
@@ -11,14 +12,37 @@ int parse_napi_args(napi_env env, napi_callback_info info, Config *config) {
     return 1;
   }
 
-  napi_value input_file_value = args[0];
-  napi_value output_file_value = args[1];
-  napi_value message_value = args[2];
+  napi_value input_file_value = NULL;
+  napi_value output_file_value = NULL;
+  napi_value message_value = NULL;
   napi_value header_value = NULL;
-  if (argc > 3) {
+
+  if (config->mode == NULL) {
+    napi_throw_error(env, NULL, "Mode is required");
+    return 1;
+  }
+
+  if (strcmp(config->mode, "encode") == 0 && argc == 4) {
+    input_file_value = args[0];
+    output_file_value = args[1];
+    message_value = args[2];
     header_value = args[3];
+  } else if (strcmp(config->mode, "encode") == 0 && argc == 3) {
+    input_file_value = args[0];
+    output_file_value = args[1];
+    message_value = args[2];
+  } else if (strcmp(config->mode, "decode") == 0 && argc == 2) {
+    input_file_value = args[0];
+    header_value = args[1];
+  } else if (strcmp(config->mode, "decode") == 0 && argc == 1) {
+    input_file_value = args[0];
   } else {
-    napi_create_string_utf8(env, DEFAULT_HEADER, NAPI_AUTO_LENGTH,
+    napi_throw_error(env, NULL, "Invalid number of arguments");
+    return 1;
+  }
+
+  if (header_value == NULL) {
+    napi_create_string_utf8(env, DEFAULT_HEADER, strlen(DEFAULT_HEADER),
                             &header_value);
   }
 
@@ -78,7 +102,7 @@ void free_config(Config *config) {
 void handle_encode_error(napi_env env, PromiseData *promise_data,
                          const char *error_message) {
   napi_value msg, err;
-  napi_create_string_utf8(env, error_message, NAPI_AUTO_LENGTH, &msg);
+  napi_create_string_utf8(env, error_message, strlen(error_message), &msg);
   napi_create_error(env, NULL, msg, &err);
   napi_reject_deferred(env, promise_data->deferred, err);
   if (promise_data->work != NULL) {
