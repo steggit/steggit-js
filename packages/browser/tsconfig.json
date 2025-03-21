@@ -3,19 +3,19 @@
     "target": "ES2020",
     "module": "ES2020",
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "sourceMap": false,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "index.d.ts",
-    "**/*.test.ts"
+    "src",
+    "steggit.d.ts"
   ],
   "exclude": [
-    "node_modules",
-    "build"
+    "dist"
   ]
 }
