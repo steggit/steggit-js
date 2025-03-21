@@ -1,0 +1,15 @@
+{
+  "name": "@steggit/core",
+  "version": "1.0.0",
+  "description": "Core steganography module",
+  "author": "james-cohen",
+  "license": "ISC",
+  "files": [
+    "src",
+    "include"
+  ],
+  "scripts": {
+    "build": "bash ./build.sh",
+    "test": "./build/test_runner"
+  }
+}

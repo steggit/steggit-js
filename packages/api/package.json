@@ -39,6 +39,6 @@
     "serverless-offline": "^14.4.0"
   },
   "dependencies": {
-    "@steggit/stego": "workspace:^"
+    "@steggit/node": "workspace:^"
   }
 }

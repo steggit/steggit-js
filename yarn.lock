@@ -3511,7 +3511,7 @@ __metadata:
   dependencies:
     "@cloudventure/jest-transformer-esbuild": "npm:^1.0.13"
     "@sentry/esbuild-plugin": "npm:^3.2.2"
-    "@steggit/stego": "workspace:^"
+    "@steggit/node": "workspace:^"
     "@steggit/types": "workspace:^"
     "@types/jest": "npm:^29.5.14"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
@@ -3531,10 +3531,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@steggit/stego@workspace:^, @steggit/stego@workspace:packages/stego":
+"@steggit/core@workspace:^, @steggit/core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@steggit/stego@workspace:packages/stego"
+  resolution: "@steggit/core@workspace:packages/core"
+  languageName: unknown
+  linkType: soft
+
+"@steggit/node@workspace:^, @steggit/node@workspace:packages/node":
+  version: 0.0.0-use.local
+  resolution: "@steggit/node@workspace:packages/node"
   dependencies:
+    "@steggit/core": "workspace:^"
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^20.0.0"
     jest: "npm:^29.7.0"

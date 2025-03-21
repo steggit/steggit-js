@@ -3,17 +3,17 @@
     {
       "target_name": "stego", 
       "sources": [
-        "src/general_utils.c",
-        "src/jpeg_utils.c",
-        "src/png_utils.c",
-        "src/wrapper.c",
-        "src/wrapper_utils.c"
+        "../core/src/general_utils.c",
+        "../core/src/jpeg_utils.c",
+        "../core/src/png_utils.c",
+        "../core/src/wrapper.c",
+        "../core/src/wrapper_utils.c"
       ],
       "include_dirs": [
-        "src",
+        "../core/src",
+        "../core/include",
         "/opt/homebrew/opt/jpeg-turbo/include",
         "/opt/homebrew/opt/libpng/include",
-        "include"
       ],
       "cflags": [
         "-Wall",

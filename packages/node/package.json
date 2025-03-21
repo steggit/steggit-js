@@ -1,5 +1,5 @@
 {
-  "name": "@steggit/stego",
+  "name": "@steggit/node",
   "version": "1.0.0",
   "description": "Node bindings for image steganography",
   "main": "./index.js",
@@ -28,5 +28,8 @@
     "node-gyp": "^11.1.0",
     "ts-jest": "^29.2.6",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@steggit/core": "workspace:^"
   }
 }
