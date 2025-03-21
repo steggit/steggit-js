@@ -1,7 +1,13 @@
 #ifndef JPEG_UTILS_H
 #define JPEG_UTILS_H
 
+#ifdef __EMSCRIPTEN__
+#include <stddef.h> // For size_t - not included in emscripten jpeg port
+#include <stdio.h>  // For FILE - not included in emscripten jpeg port
+#else
 #include <_stdio.h>
+#endif
+
 #include <jpeglib.h>
 
 void embed_message(JBLOCKARRAY row_ptrs, JDIMENSION width_in_blocks,
