@@ -3531,6 +3531,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@steggit/browser@workspace:packages/browser":
+  version: 0.0.0-use.local
+  resolution: "@steggit/browser@workspace:packages/browser"
+  dependencies:
+    "@steggit/core": "workspace:^"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^20.0.0"
+    jest: "npm:^29.7.0"
+    ts-jest: "npm:^29.2.6"
+    typescript: "npm:^5.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@steggit/core@workspace:^, @steggit/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@steggit/core@workspace:packages/core"
