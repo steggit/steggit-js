@@ -10,6 +10,17 @@
 #define JPEG_MAGIC_SIZE 3
 #define PNG_MAGIC_SIZE 8
 
+int is_valid_file(const char *filename) {
+  FILE *file = fopen(filename, "rb");
+  if (file == NULL) {
+    fprintf(stderr, "Error: Cannot open file '%s'\n", filename);
+    return 1;
+  }
+
+  fclose(file);
+  return 0;
+}
+
 const char *get_mime_type(const char *filename) {
   FILE *file = fopen(filename, "rb");
   if (file == NULL) {

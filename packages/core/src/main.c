@@ -15,6 +15,10 @@ EMSCRIPTEN_KEEPALIVE
 int encode_png(const char *input, const char *output, const char *message,
                const char *header, char **error_message) {
 
+  if (is_valid_file(input) != 0) {
+    *error_message = strdup("Error: Input file does not exist");
+    return 1;
+  }
   const char *mime_type = get_mime_type(input);
   if (strcmp(mime_type, "image/png") != 0) {
     *error_message = strdup("Error: Input file must be a PNG image");
@@ -33,6 +37,10 @@ EMSCRIPTEN_KEEPALIVE
 int encode_jpeg(const char *input, const char *output, const char *message,
                 const char *header, char **error_message) {
 
+  if (is_valid_file(input) != 0) {
+    *error_message = strdup("Error: Input file does not exist");
+    return 1;
+  }
   const char *mime_type = get_mime_type(input);
   if (strcmp(mime_type, "image/jpeg") != 0) {
     *error_message = strdup("Error: Input file must be a JPEG image");
@@ -50,6 +58,10 @@ EMSCRIPTEN_KEEPALIVE
 #endif
 char *decode_png(const char *input, const char *header, char **error_message) {
 
+  if (is_valid_file(input) != 0) {
+    *error_message = strdup("Error: Input file does not exist");
+    return NULL;
+  }
   const char *mime_type = get_mime_type(input);
   if (strcmp(mime_type, "image/png") != 0) {
     *error_message = strdup("Error: Input file must be a PNG image");
@@ -71,6 +83,10 @@ EMSCRIPTEN_KEEPALIVE
 #endif
 char *decode_jpeg(const char *input, const char *header, char **error_message) {
 
+  if (is_valid_file(input) != 0) {
+    *error_message = strdup("Error: Input file does not exist");
+    return NULL;
+  }
   const char *mime_type = get_mime_type(input);
   if (strcmp(mime_type, "image/jpeg") != 0) {
     *error_message = strdup("Error: Input file must be a JPEG image");
