@@ -14,6 +14,8 @@ declare module 'dist/steggit_emcc.js' {
     _malloc: (size: number) => number;
     _free: (ptr: number) => void;
     stringToUTF8: (str: string, outPtr: number, maxBytesToWrite: number) => void;
+    getValue: (ptr: number, type: string) => number;
+    setValue: (ptr: number, index: number, value: string) => void;
     FS: {
       writeFile: (path: string, data: Uint8Array | string) => void;
       readFile: (path: string) => Uint8Array;

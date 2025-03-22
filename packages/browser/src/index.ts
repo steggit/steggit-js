@@ -1,5 +1,5 @@
 import ModuleFactory, { type StegoModule } from 'dist/steggit_emcc.js';
-import { allocateMemory, freeMemory, validateInput, writeInputToFS } from './utils';
+import { allocateMemory, freeMemory, getErrorMessage, validateInput, writeInputToFS } from './utils';
 
 let moduleInstance: StegoModule | null = null;
 
@@ -19,10 +19,6 @@ async function getModule(): Promise<StegoModule> {
  */
 export async function encodeTextPng(input: File | Buffer | string, message: string, header?: string): Promise<Blob> {
   const mod = await getModule();
-
-  if (!message || !message.length) {
-    throw new Error('No message provided');
-  }
   validateInput(input, 'image/png');
 
   const inputFilename = '/input.png';
@@ -35,7 +31,7 @@ export async function encodeTextPng(input: File | Buffer | string, message: stri
   let outputBuffer: Uint8Array | null = null;
   try {
     result = mod._encode_png(memory.input, memory.output, memory.header, memory.message, memory.error);
-    errorMessage = mod.UTF8ToString(memory.error);
+    errorMessage = getErrorMessage(memory, mod);
     if (result === 0) {
       outputBuffer = mod.FS.readFile(outputFilename);
     }

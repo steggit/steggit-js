@@ -32,7 +32,7 @@ describe('encode png - error handling', () => {
     const inputPath = getInputPath('test.png');
     const input = fs.readFileSync(inputPath);
     const message = 'test';
-    await expect(encodeTextPng(input, '')).rejects.toThrow('No message provided');
+    await expect(encodeTextPng(input, '')).rejects.toThrow('Error: Message is required');
     await expect(encodeTextPng('', message)).rejects.toThrow('No input provided');
   });
   it('should throw if input is not a PNG image', async () => {
