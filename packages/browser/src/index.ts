@@ -30,7 +30,7 @@ export async function encodeTextPng(input: File | Buffer | string, message: stri
   let errorMessage = '';
   let outputBuffer: Uint8Array | null = null;
   try {
-    result = mod._encode_png(memory.input, memory.output, memory.header, memory.message, memory.error);
+    result = mod._encode_png(memory.input, memory.output, memory.message, memory.header, memory.error);
     errorMessage = getErrorMessage(memory, mod);
     if (result === 0) {
       outputBuffer = mod.FS.readFile(outputFilename);
@@ -81,8 +81,8 @@ export async function encodeTextJpeg(input: File | Buffer | string, message: str
   let errorMessage = '';
   let outputBuffer: Uint8Array | null = null;
   try {
-    result = mod._encode_jpeg(memory.input, memory.output, memory.header, memory.message, memory.error);
-    errorMessage = mod.UTF8ToString(memory.error);
+    result = mod._encode_jpeg(memory.input, memory.output, memory.message, memory.header, memory.error);
+    errorMessage = getErrorMessage(memory, mod);
     if (result === 0) {
       outputBuffer = mod.FS.readFile(outputFilename);
     }
