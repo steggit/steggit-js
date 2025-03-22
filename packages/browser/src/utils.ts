@@ -1,11 +1,11 @@
 import { StegoModule } from "dist/steggit_emcc.js";
 
 interface Memory {
-  input: number;
-  output: number;
-  message: number;
-  header: number;
-  error: number;
+  input: number | null;
+  output: number | null;
+  message: number | null;
+  header: number | null;
+  error: number | null;
 }
 
 export function validateInput(input: File | Buffer | string, mimeType: string) {
@@ -47,6 +47,9 @@ export async function writeInputToFS(input: File | Buffer | string, inputFilenam
 }
 
 export function getErrorMessage(memory: Memory, mod: StegoModule) {
+  if (!memory.error) {
+    return '';
+  }
   const errorPtr = mod.getValue(memory.error, 'i32');
   const errorStr = mod.UTF8ToString(errorPtr);
   return errorStr;
@@ -57,20 +60,33 @@ export function allocateMemory(inputFilename: string, outputFilename: string, ms
   const input = mod._malloc(inputFilename.length + 1);
   const output = mod._malloc(outputFilename.length + 1);
   const message = mod._malloc(msgLength);
-  const header = mod._malloc((hdr?.length || 0) + 1);
   const error = mod._malloc(4);
+  let header = null;
+  if (hdr?.length) {
+    header = mod._malloc(hdr.length + 1);
+    mod.stringToUTF8(hdr, header, hdr.length + 1);
+  }
   mod.stringToUTF8(inputFilename, input, inputFilename.length + 1);
   mod.stringToUTF8(outputFilename, output, outputFilename.length + 1);
-  mod.stringToUTF8(hdr || '', header, hdr?.length || 0);
   mod.stringToUTF8(msg, message, msgLength);
   mod.setValue(error, 0, 'i32');
   return { input, output, message, header, error };
 }
 
 export function freeMemory(memory: Memory, mod: StegoModule) {
-  mod._free(memory.input);
-  mod._free(memory.output);
-  mod._free(memory.message);
-  mod._free(memory.header);
-  mod._free(memory.error);
+  if (memory.input) {
+    mod._free(memory.input);
+  }
+  if (memory.output) {
+    mod._free(memory.output);
+  }
+  if (memory.message) {
+    mod._free(memory.message);
+  }
+  if (memory.header) {
+    mod._free(memory.header);
+  }
+  if (memory.error) {
+    mod._free(memory.error);
+  }
 }

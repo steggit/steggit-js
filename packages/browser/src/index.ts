@@ -132,7 +132,9 @@ export async function decodeTextPng(input: File | Buffer | string, header?: stri
   try {
     result = mod._decode_png(memory.input, memory.header, memory.error);
     errorMessage = getErrorMessage(memory, mod);
-    output = mod.UTF8ToString(memory.message);
+    if (result) {
+      output = mod.UTF8ToString(result);
+    }
   } catch (error: unknown) {
     console.error('UNHANDLED ERROR', error);
     result = -1;
@@ -142,9 +144,6 @@ export async function decodeTextPng(input: File | Buffer | string, header?: stri
     mod.FS.unlink(inputFilename);
   }
 
-  if (result !== 0) {
-    throw new Error(errorMessage);
-  }
   if (!output?.length) {
     throw new Error('No message found');
   }
@@ -172,7 +171,9 @@ export async function decodeTextJpeg(input: File | Buffer | string, header?: str
   try {
     result = mod._decode_jpeg(memory.input, memory.header, memory.error);
     errorMessage = getErrorMessage(memory, mod);
-    output = mod.UTF8ToString(memory.message);
+    if (result) {
+      output = mod.UTF8ToString(result);
+    }
   } catch (error: unknown) {
     console.error('UNHANDLED ERROR', error);
     result = -1;
@@ -182,9 +183,6 @@ export async function decodeTextJpeg(input: File | Buffer | string, header?: str
     mod.FS.unlink(inputFilename);
   }
 
-  if (result !== 0) {
-    throw new Error(errorMessage);
-  }
   if (!output?.length) {
     throw new Error('No message found');
   }

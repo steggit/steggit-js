@@ -1,9 +1,10 @@
 declare module 'dist/steggit_emcc.js' {
+
   interface StegoModule {
-    _encode_png: (inputPtr: number, outputPtr: number, messagePtr: number, headerPtr: number, errorPtr: number) => number;
-    _encode_jpeg: (inputPtr: number, outputPtr: number, messagePtr: number, headerPtr: number, errorPtr: number) => number;
-    _decode_png: (inputPtr: number, headerPtr: number, errorPtr: number) => number;
-    _decode_jpeg: (inputPtr: number, headerPtr: number, errorPtr: number) => number;
+    _encode_png: (inputPtr: number | null, outputPtr: number | null, messagePtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
+    _encode_jpeg: (inputPtr: number | null, outputPtr: number | null, messagePtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
+    _decode_png: (inputPtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
+    _decode_jpeg: (inputPtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
 
     cwrap: (
       funcName: string,
