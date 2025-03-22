@@ -83,8 +83,7 @@ describe('png - full process', () => {
     const input = fs.readFileSync(inputPath);
     const output = await encodeTextPng(input, message);
     expect(output).toBeInstanceOf(Blob);
-    const outputFile = new File([output], 'output.png', { type: 'image/png' });
-    console.log(outputFile);
+    const outputFile = Buffer.from(await output.arrayBuffer());
     const decodedMessage = await decodeTextPng(outputFile);
     expect(decodedMessage).toBe(message);
   });
@@ -96,7 +95,8 @@ describe('png - full process', () => {
     const input = fs.readFileSync(inputPath);
     const output = await encodeTextPng(input, message, header);
     expect(output).toBeInstanceOf(Blob);
-    const decodedMessage = await decodeTextPng(new File([output], 'output.png', { type: 'image/png' }), header);
+    const outputFile = Buffer.from(await output.arrayBuffer());
+    const decodedMessage = await decodeTextPng(outputFile, header);
     expect(decodedMessage).toBe(message);
   });
 
@@ -106,7 +106,8 @@ describe('png - full process', () => {
     const input = fs.readFileSync(inputPath);
     const output = await encodeTextPng(input, message);
     expect(output).toBeInstanceOf(Blob);
-    const decodedMessage = await decodeTextPng(new File([output], 'output.png', { type: 'image/png' }));
+    const outputFile = Buffer.from(await output.arrayBuffer());
+    const decodedMessage = await decodeTextPng(outputFile);
     expect(decodedMessage).toBe(message);
   });
 
@@ -117,6 +118,43 @@ describe('png - full process', () => {
     const input = fs.readFileSync(inputPath);
     const output = await encodeTextPng(input, message, header);
     expect(output).toBeInstanceOf(Blob);
-    await expect(decodeTextPng(new File([output], 'output.png', { type: 'image/png' }), 'different-header')).rejects.toThrow('Failed to decode message');
+    const outputFile = Buffer.from(await output.arrayBuffer());
+    await expect(decodeTextPng(outputFile, 'different-header')).rejects.toThrow('No message found');
+  });
+});
+
+describe('jpeg - full process', () => {
+  it('should encode and decode text in a JPEG image', async () => {
+    const inputPath = getInputPath('test.jpg');
+    const message = 'Hello, world!';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextJpeg(input, message);
+    expect(output).toBeInstanceOf(Blob);
+    const outputFile = Buffer.from(await output.arrayBuffer());
+    const decodedMessage = await decodeTextJpeg(outputFile);
+    expect(decodedMessage).toBe(message);
+  });
+
+  it('should encode and decode text in a JPEG image with custom header', async () => {
+    const inputPath = getInputPath('test.jpg');
+    const message = 'Hello, world!';
+    const header = 'abcde12345';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextJpeg(input, message, header);
+    expect(output).toBeInstanceOf(Blob);
+    const outputFile = Buffer.from(await output.arrayBuffer());
+    const decodedMessage = await decodeTextJpeg(outputFile, header);
+    expect(decodedMessage).toBe(message);
+  });
+
+  it('should not return message if different header is used', async () => {
+    const inputPath = getInputPath('test.jpg');
+    const message = 'Hello, world!';
+    const header = 'abcde12345';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextJpeg(input, message, header);
+    expect(output).toBeInstanceOf(Blob);
+    const outputFile = Buffer.from(await output.arrayBuffer());
+    await expect(decodeTextJpeg(outputFile, 'different-header')).rejects.toThrow('No message found');
   });
 });
