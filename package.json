@@ -11,7 +11,11 @@
     "commit:staged": "commit",
     "commit:all": "git add . && commit",
     "prepare": "husky",
-    "release": "multi-semantic-release"
+    "release": "multi-semantic-release",
+    "build:core": "yarn workspace @steggit/core build",
+    "build:browser": "yarn workspace @steggit/browser build",
+    "build:node": "yarn workspace @steggit/node build",
+    "build:all": "yarn build:core && yarn build:node && yarn build:browser"
   },
   "repository": {
     "type": "git",
