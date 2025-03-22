@@ -15,6 +15,18 @@ EMSCRIPTEN_KEEPALIVE
 int encode_png(const char *input, const char *output, const char *message,
                const char *header, char **error_message) {
 
+  if (!message || !strlen(message)) {
+    *error_message = strdup("Error: Message is required");
+    return 1;
+  }
+  if (!input || !strlen(input)) {
+    *error_message = strdup("Error: Input file is required");
+    return 1;
+  }
+  if (!output || !strlen(output)) {
+    *error_message = strdup("Error: Output file is required");
+    return 1;
+  }
   if (is_valid_file(input) != 0) {
     *error_message = strdup("Error: Input file does not exist");
     return 1;
@@ -37,6 +49,18 @@ EMSCRIPTEN_KEEPALIVE
 int encode_jpeg(const char *input, const char *output, const char *message,
                 const char *header, char **error_message) {
 
+  if (!message || !strlen(message)) {
+    *error_message = strdup("Error: Message is required");
+    return 1;
+  }
+  if (!input || !strlen(input)) {
+    *error_message = strdup("Error: Input file is required");
+    return 1;
+  }
+  if (!output || !strlen(output)) {
+    *error_message = strdup("Error: Output file is required");
+    return 1;
+  }
   if (is_valid_file(input) != 0) {
     *error_message = strdup("Error: Input file does not exist");
     return 1;

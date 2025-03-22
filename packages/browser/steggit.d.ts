@@ -14,6 +14,11 @@ declare module 'dist/steggit_emcc.js' {
     _malloc: (size: number) => number;
     _free: (ptr: number) => void;
     stringToUTF8: (str: string, outPtr: number, maxBytesToWrite: number) => void;
+    FS: {
+      writeFile: (path: string, data: Uint8Array | string) => void;
+      readFile: (path: string) => Uint8Array;
+      unlink: (path: string) => void;
+    };
   }
 
   const StegoModuleFactory: () => Promise<StegoModule>;
