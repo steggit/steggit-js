@@ -14,10 +14,10 @@ export function validateInput(input: File | Buffer | string, mimeType: string) {
   }
   const extension = mimeType.split('/')[1];
   if (input instanceof File && input.type !== mimeType) {
-    throw new Error(`Input is not a valid ${extension} image`);
+    throw new Error(`File is not a valid ${extension} image`);
   }
   if (typeof input === 'string' && !input.startsWith(`data:${mimeType};base64,`)) {
-    throw new Error(`Input is not a valid ${extension} image`);
+    throw new Error(`Input string is not a valid ${extension} image`);
   }
 }
 

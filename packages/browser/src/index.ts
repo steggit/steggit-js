@@ -19,6 +19,10 @@ async function getModule(): Promise<StegoModule> {
  */
 export async function encodeTextPng(input: File | Buffer | string, message: string, header?: string): Promise<Blob> {
   const mod = await getModule();
+
+  if (!message || !message.length) {
+    throw new Error('No message provided');
+  }
   validateInput(input, 'image/png');
 
   const inputFilename = '/input.png';
