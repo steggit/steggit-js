@@ -53,15 +53,16 @@ export function getErrorMessage(memory: Memory, mod: StegoModule) {
 }
 
 export function allocateMemory(inputFilename: string, outputFilename: string, msg: string, hdr: string, mod: StegoModule): Memory {
+  const msgLength = msg?.length ? msg.length + 1 : 1024;
   const input = mod._malloc(inputFilename.length + 1);
   const output = mod._malloc(outputFilename.length + 1);
-  const message = mod._malloc(msg.length + 1);
+  const message = mod._malloc(msgLength);
   const header = mod._malloc((hdr?.length || 0) + 1);
   const error = mod._malloc(4);
   mod.stringToUTF8(inputFilename, input, inputFilename.length + 1);
   mod.stringToUTF8(outputFilename, output, outputFilename.length + 1);
   mod.stringToUTF8(hdr || '', header, hdr?.length || 0);
-  mod.stringToUTF8(msg, message, msg.length + 1);
+  mod.stringToUTF8(msg, message, msgLength);
   mod.setValue(error, 0, 'i32');
   return { input, output, message, header, error };
 }

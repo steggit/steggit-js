@@ -6,27 +6,6 @@ const getInputPath = (name: string) => {
   return path.join(__dirname, '..', '__fixtures__', name);
 };
 
-const jpegOutputPath = getInputPath('output.jpg');
-const pngOutputPath = getInputPath('output.png');
-
-beforeAll(() => {
-  if (fs.existsSync(jpegOutputPath)) {
-    fs.unlinkSync(jpegOutputPath);
-  }
-  if (fs.existsSync(pngOutputPath)) {
-    fs.unlinkSync(pngOutputPath);
-  }
-});
-
-afterAll(() => {
-  if (fs.existsSync(jpegOutputPath)) {
-    fs.unlinkSync(jpegOutputPath);
-  }
-  if (fs.existsSync(pngOutputPath)) {
-    fs.unlinkSync(pngOutputPath);
-  }
-});
-
 describe('encode png - error handling', () => {
   it('should throw if missing arguments', async () => {
     const inputPath = getInputPath('test.png');
@@ -34,6 +13,8 @@ describe('encode png - error handling', () => {
     const message = 'test';
     await expect(encodeTextPng(input, '')).rejects.toThrow('No message provided');
     await expect(encodeTextPng('', message)).rejects.toThrow('No input provided');
+    await expect(encodeTextPng(new File([], 'test.png'), message)).rejects.toThrow('No input provided');
+    await expect(encodeTextPng(Buffer.from([]), message)).rejects.toThrow('No input provided');
   });
 
   it('should throw if input is not a PNG image', async () => {
@@ -67,6 +48,8 @@ describe('encode jpeg - error handling', () => {
     const message = 'test';
     await expect(encodeTextJpeg(input, '')).rejects.toThrow('No message provided');
     await expect(encodeTextJpeg('', message)).rejects.toThrow('No input provided');
+    await expect(encodeTextJpeg(new File([], 'test.jpg'), message)).rejects.toThrow('No input provided');
+    await expect(encodeTextJpeg(Buffer.from([]), message)).rejects.toThrow('No input provided');
   });
 
   it('should throw if input is not a JPEG image', async () => {
@@ -90,5 +73,50 @@ describe('encode jpeg - error handling', () => {
     const input = fs.readFileSync(inputPath);
     const message = 'Hello, world!'.repeat(1000);
     await expect(encodeTextJpeg(input, message)).rejects.toThrow(/Message too large for image! Available space = \d+ bits, message size = \d+ bits/);
+  });
+});
+
+describe('png - full process', () => {
+  it('should encode and decode text in a PNG image', async () => {
+    const inputPath = getInputPath('test.png');
+    const message = 'Hello, world!';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextPng(input, message);
+    expect(output).toBeInstanceOf(Blob);
+    const outputFile = new File([output], 'output.png', { type: 'image/png' });
+    console.log(outputFile);
+    const decodedMessage = await decodeTextPng(outputFile);
+    expect(decodedMessage).toBe(message);
+  });
+
+  it('should encode and decode text in a PNG image with custom header', async () => {
+    const inputPath = getInputPath('test.png');
+    const message = 'Hello, world!';
+    const header = 'abcde12345';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextPng(input, message, header);
+    expect(output).toBeInstanceOf(Blob);
+    const decodedMessage = await decodeTextPng(new File([output], 'output.png', { type: 'image/png' }), header);
+    expect(decodedMessage).toBe(message);
+  });
+
+  it('should encode and decode text in a transparent image', async () => {
+    const inputPath = getInputPath('transparent_test.png');
+    const message = 'Can you see me?';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextPng(input, message);
+    expect(output).toBeInstanceOf(Blob);
+    const decodedMessage = await decodeTextPng(new File([output], 'output.png', { type: 'image/png' }));
+    expect(decodedMessage).toBe(message);
+  });
+
+  it('should not return message if different header is used', async () => {
+    const inputPath = getInputPath('test.png');
+    const message = 'Hello, world!';
+    const header = 'abcde12345';
+    const input = fs.readFileSync(inputPath);
+    const output = await encodeTextPng(input, message, header);
+    expect(output).toBeInstanceOf(Blob);
+    await expect(decodeTextPng(new File([output], 'output.png', { type: 'image/png' }), 'different-header')).rejects.toThrow('Failed to decode message');
   });
 });

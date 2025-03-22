@@ -55,7 +55,7 @@ export async function encodeTextPng(input: File | Buffer | string, message: stri
     throw new Error(errorMessage);
   }
   if (!outputBuffer?.length) {
-    throw new Error('No message returned');
+    throw new Error('No file returned');
   }
 
   return new Blob([outputBuffer], { type: 'image/png' });
@@ -106,7 +106,7 @@ export async function encodeTextJpeg(input: File | Buffer | string, message: str
     throw new Error(errorMessage);
   }
   if (!outputBuffer?.length) {
-    throw new Error('No message returned');
+    throw new Error('No file returned');
   }
 
   return new Blob([outputBuffer], { type: 'image/jpeg' });
@@ -114,72 +114,82 @@ export async function encodeTextJpeg(input: File | Buffer | string, message: str
 
 /**
  * Decodes text from a PNG image using LSB steganography
- * @param inputPath - Path to the input PNG image
+ * @param input - Input image file
  * @param header - Header to use for the decoded message. If not provided, the default header will be used.
  * @returns Promise<string>
  */
-export async function decodeTextPng(input: string, header?: string): Promise<string> {
+export async function decodeTextPng(input: File | Buffer | string, header?: string): Promise<string> {
   const mod = await getModule();
-  const inputPtr = mod._malloc(input.length + 1);
-  const headerPtr = mod._malloc((header?.length || 0) + 1);
-  const messagePtr = mod._malloc(1024);
-  const errorPtr = mod._malloc(1024);
+  validateInput(input, 'image/png');
+  const inputFilename = '/input.png';
+
+  await writeInputToFS(input, inputFilename, mod);
+  const memory = allocateMemory(inputFilename, '', '', header || '', mod);
+
+  let result = -1;
+  let errorMessage = '';
+  let output = '';
   try {
-    mod.stringToUTF8(input, inputPtr, input.length + 1);
-    mod.stringToUTF8(header || '', headerPtr, header?.length || 0);
-    const result = mod._decode_png(inputPtr, headerPtr, errorPtr);
-
-    if (result > 0) {
-      throw new Error(mod.UTF8ToString(errorPtr));
-    }
-
-    const message = mod.UTF8ToString(messagePtr);
-    if (!message?.length) {
-      throw new Error('No message found');
-    }
-
-    return message;
+    result = mod._decode_png(memory.input, memory.header, memory.error);
+    errorMessage = getErrorMessage(memory, mod);
+    output = mod.UTF8ToString(memory.message);
+  } catch (error: unknown) {
+    console.error('UNHANDLED ERROR', error);
+    result = -1;
+    errorMessage = (error as Error)?.message || 'Unknown error';
   } finally {
-    mod._free(inputPtr);
-    mod._free(headerPtr);
-    mod._free(messagePtr);
-    mod._free(errorPtr);
+    freeMemory(memory, mod);
+    mod.FS.unlink(inputFilename);
   }
+
+  if (result !== 0) {
+    throw new Error(errorMessage);
+  }
+  if (!output?.length) {
+    throw new Error('No message found');
+  }
+
+  return output;
 }
 
 /**
  * Decodes text from a JPEG image using DCT steganography
- * @param inputPath - Path to the input JPEG image
+ * @param input - Input image file
  * @param header - Header to use for the decoded message. If not provided, the default header will be used.
  * @returns Promise<string>
  */
-export async function decodeTextJpeg(input: string, header?: string): Promise<string> {
+export async function decodeTextJpeg(input: File | Buffer | string, header?: string): Promise<string> {
   const mod = await getModule();
-  const inputPtr = mod._malloc(input.length + 1);
-  const headerPtr = mod._malloc((header?.length || 0) + 1);
-  const messagePtr = mod._malloc(1024);
-  const errorPtr = mod._malloc(1024);
+  validateInput(input, 'image/jpeg');
+  const inputFilename = '/input.jpg';
+
+  await writeInputToFS(input, inputFilename, mod);
+  const memory = allocateMemory(inputFilename, '', '', header || '', mod);
+
+  let result = -1;
+  let errorMessage = '';
+  let output = '';
   try {
-    mod.stringToUTF8(input, inputPtr, input.length + 1);
-    mod.stringToUTF8(header || '', headerPtr, header?.length || 0);
-    const result = mod._decode_jpeg(inputPtr, headerPtr, errorPtr);
-
-    if (result > 0) {
-      throw new Error(mod.UTF8ToString(errorPtr));
-    }
-
-    const message = mod.UTF8ToString(messagePtr);
-    if (!message?.length) {
-      throw new Error('No message found');
-    }
-
-    return message;
+    result = mod._decode_jpeg(memory.input, memory.header, memory.error);
+    errorMessage = getErrorMessage(memory, mod);
+    output = mod.UTF8ToString(memory.message);
+  } catch (error: unknown) {
+    console.error('UNHANDLED ERROR', error);
+    result = -1;
+    errorMessage = (error as Error)?.message || 'Unknown error';
   } finally {
-    mod._free(inputPtr);
-    mod._free(headerPtr);
-    mod._free(messagePtr);
-    mod._free(errorPtr);
+    freeMemory(memory, mod);
+    mod.FS.unlink(inputFilename);
   }
+
+  if (result !== 0) {
+    throw new Error(errorMessage);
+  }
+  if (!output?.length) {
+    throw new Error('No message found');
+  }
+
+  return output;
 }
 
 
