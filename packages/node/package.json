@@ -28,8 +28,5 @@
     "node-gyp": "^11.1.0",
     "ts-jest": "^29.2.6",
     "typescript": "^5.8.2"
-  },
-  "dependencies": {
-    "@steggit/core": "workspace:^"
   }
 }

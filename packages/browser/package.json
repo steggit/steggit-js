@@ -37,8 +37,5 @@
     "ts-jest": "^29.2.6",
     "tsc": "^2.0.4",
     "typescript": "^5.8.2"
-  },
-  "dependencies": {
-    "@steggit/core": "workspace:^"
   }
 }

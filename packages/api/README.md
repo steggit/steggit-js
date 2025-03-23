@@ -1,2 +1,0 @@
-# steggit
-Steggit test
