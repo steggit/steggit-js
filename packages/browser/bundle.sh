@@ -29,7 +29,7 @@ esbuild src/index.ts \
   --bundle \
   --outfile="$OUTPUT_FILE" \
   --format="$FORMAT_FLAG" \
-  --platform=node \
+  --platform=browser \
   --external:dist/steggit_emcc.js
 
 echo "Bundle created successfully: $OUTPUT_FILE"

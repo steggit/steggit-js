@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "typecheck": "tsc --noEmit",
     "build:wasm": "bash ./build.sh",
     "build:esm": "bash ./bundle.sh esm",
     "build:cjs": "bash ./bundle.sh cjs",
