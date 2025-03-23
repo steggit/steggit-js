@@ -15,7 +15,8 @@
     "build:core": "yarn workspace @steggit/core build",
     "build:browser": "yarn workspace @steggit/browser build",
     "build:node": "yarn workspace @steggit/node build",
-    "build:all": "yarn build:core && yarn build:node && yarn build:browser"
+    "build:utils": "yarn workspace @steggit/utils build",
+    "build:all": "yarn build:core && yarn build:node && yarn build:browser && yarn build:utils"
   },
   "repository": {
     "type": "git",
