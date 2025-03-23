@@ -157,7 +157,7 @@ describe('png - full process', () => {
     expect(output).toBeInstanceOf(Blob);
     const outputFile = Buffer.from(await output.arrayBuffer());
     await expect(decodeTextPng(outputFile, 'different-header')).rejects.toThrow(
-      'No message found',
+      'Error: Failed to extract message from PNG image',
     );
   });
 });
@@ -196,6 +196,6 @@ describe('jpeg - full process', () => {
     const outputFile = Buffer.from(await output.arrayBuffer());
     await expect(
       decodeTextJpeg(outputFile, 'different-header'),
-    ).rejects.toThrow('No message found');
+    ).rejects.toThrow('Error: Failed to extract message from JPEG image');
   });
 });

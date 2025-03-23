@@ -2181,6 +2181,7 @@ __metadata:
     jest-environment-jsdom: "npm:^29.7.0"
     ts-jest: "npm:^29.2.6"
     tsup: "npm:^8.4.0"
+    typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
 

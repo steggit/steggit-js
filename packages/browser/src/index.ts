@@ -180,14 +180,13 @@ export async function decodeTextPng(
     }
   } catch (error) {
     console.error('UNHANDLED ERROR', error);
-    result = -1;
     errorMessage = (error as Error).message || 'Unknown error';
   } finally {
     freeMemory(memory, mod);
     mod.FS.unlink(inputFilename);
   }
 
-  if (result !== 0) {
+  if (errorMessage) {
     throw new Error(errorMessage);
   }
   if (!output.length) {
@@ -232,7 +231,7 @@ export async function decodeTextJpeg(
     mod.FS.unlink(inputFilename);
   }
 
-  if (result !== 0) {
+  if (errorMessage) {
     throw new Error(errorMessage);
   }
   if (!output.length) {
