@@ -9306,9 +9306,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"steggit@workspace:.":
+"steggit-js@workspace:.":
   version: 0.0.0-use.local
-  resolution: "steggit@workspace:."
+  resolution: "steggit-js@workspace:."
   dependencies:
     "@anolilab/multi-semantic-release": "npm:^1.1.10"
     "@babel/core": "npm:^7.26.10"

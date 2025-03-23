@@ -1,5 +1,5 @@
 {
-  "name": "steggit",
+  "name": "steggit-js",
   "version": "1.0.0",
   "description": "Monorepo for Stegg.it",
   "main": "index.js",
