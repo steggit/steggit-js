@@ -3575,6 +3575,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@steggit/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@steggit/utils@workspace:packages/utils"
+  dependencies:
+    "@cloudventure/jest-transformer-esbuild": "npm:^1.0.13"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^20.0.0"
+    "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
+    "@typescript-eslint/parser": "npm:^6.21.0"
+    babel-plugin-jest-hoist: "npm:^29.6.3"
+    dotenv: "npm:^16.4.7"
+    esbuild: "npm:^0.25.1"
+    eslint: "npm:^8.56.0"
+    eslint-config-airbnb-base: "npm:^15.0.0"
+    eslint-config-prettier: "npm:^9.1.0"
+    eslint-plugin-import: "npm:^2.29.1"
+    eslint-plugin-prettier: "npm:^5.1.3"
+    jest: "npm:^29.7.0"
+    prettier: "npm:^3.5.3"
+    tsc: "npm:^2.0.4"
+    typescript: "npm:^5.8.2"
+  languageName: unknown
+  linkType: soft
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -3718,7 +3742,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.13.10":
+"@types/node@npm:*":
   version: 22.13.10
   resolution: "@types/node@npm:22.13.10"
   dependencies:
@@ -11324,10 +11348,13 @@ __metadata:
     "@semantic-release/changelog": "npm:^6.0.3"
     "@semantic-release/git": "npm:^10.0.1"
     "@types/babel__core": "npm:^7"
-    "@types/node": "npm:^22.13.10"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^20.0.0"
     babel-plugin-jest-hoist: "npm:^29.6.3"
+    eslint: "npm:^8.56.0"
     husky: "npm:^9.1.7"
     jest-util: "npm:^29.7.0"
+    prettier: "npm:^3.5.3"
     semantic-release: "npm:^24.2.1"
     semantic-release-replace-plugin: "npm:^1.2.7"
     typescript: "npm:^5.8.2"
