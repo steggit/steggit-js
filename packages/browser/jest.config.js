@@ -4,11 +4,9 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js'],
   setupFilesAfterEnv: ['./jest.setup.js'],
   moduleNameMapper: {
-    '^dist/steggit_emcc.js$': '<rootDir>/dist/steggit_emcc.js'
+    '^dist/steggit_emcc.js$': '<rootDir>/dist/steggit_emcc.js',
   },
   transform: {
-    '^.+\\.tsx?$': [
-      '@cloudventure/jest-transformer-esbuild'
-    ]
+    '^.+\\.tsx?$': ['@cloudventure/jest-transformer-esbuild'],
   },
-}; 
+};

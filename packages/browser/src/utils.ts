@@ -1,4 +1,4 @@
-import { StegoModule } from "dist/steggit_emcc.js";
+import { StegoModule } from 'dist/steggit_emcc.js';
 
 interface Memory {
   input: number | null;
@@ -9,19 +9,31 @@ interface Memory {
 }
 
 export function validateInput(input: File | Buffer | string, mimeType: string) {
-  if (!input || (typeof input === 'string' && !input.length) || (input instanceof File && !input.size) || (input instanceof Buffer && !input.length)) {
+  if (
+    !input ||
+    (typeof input === 'string' && !input.length) ||
+    (input instanceof File && !input.size) ||
+    (input instanceof Buffer && !input.length)
+  ) {
     throw new Error('No input provided');
   }
   const extension = mimeType.split('/')[1];
   if (input instanceof File && input.type !== mimeType) {
     throw new Error(`File is not a valid ${extension} image`);
   }
-  if (typeof input === 'string' && !input.startsWith(`data:${mimeType};base64,`)) {
+  if (
+    typeof input === 'string' &&
+    !input.startsWith(`data:${mimeType};base64,`)
+  ) {
     throw new Error(`Input string is not a valid ${extension} image`);
   }
 }
 
-export async function writeInputToFS(input: File | Buffer | string, inputFilename: string, mod: StegoModule) {
+export async function writeInputToFS(
+  input: File | Buffer | string,
+  inputFilename: string,
+  mod: StegoModule,
+) {
   try {
     if (input instanceof File) {
       const arrayBuffer = await input.arrayBuffer();
@@ -39,7 +51,7 @@ export async function writeInputToFS(input: File | Buffer | string, inputFilenam
       mod.FS.writeFile(inputFilename, binaryData);
     } else {
       throw new Error('Invalid input type');
-    }  
+    }
   } catch (error: unknown) {
     const errorMessage = (error as Error)?.message || 'Unknown error';
     throw new Error(`Failed to write input file: ${errorMessage}`);
@@ -55,7 +67,13 @@ export function getErrorMessage(memory: Memory, mod: StegoModule) {
   return errorStr;
 }
 
-export function allocateMemory(inputFilename: string, outputFilename: string, msg: string, hdr: string, mod: StegoModule): Memory {
+export function allocateMemory(
+  inputFilename: string,
+  outputFilename: string,
+  msg: string,
+  hdr: string,
+  mod: StegoModule,
+): Memory {
   const msgLength = msg?.length ? msg.length + 1 : 1024;
   const input = mod._malloc(inputFilename.length + 1);
   const output = mod._malloc(outputFilename.length + 1);

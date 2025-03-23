@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { encodeTextPng, encodeTextJpeg, decodeTextPng, decodeTextJpeg } from '../src/index';
+import {
+  encodeTextPng,
+  encodeTextJpeg,
+  decodeTextPng,
+  decodeTextJpeg,
+} from '../src/index';
 
 const getInputPath = (name: string) => {
   return path.join(__dirname, '..', '__fixtures__', name);
@@ -11,10 +16,18 @@ describe('encode png - error handling', () => {
     const inputPath = getInputPath('test.png');
     const input = fs.readFileSync(inputPath);
     const message = 'test';
-    await expect(encodeTextPng(input, '')).rejects.toThrow('No message provided');
-    await expect(encodeTextPng('', message)).rejects.toThrow('No input provided');
-    await expect(encodeTextPng(new File([], 'test.png'), message)).rejects.toThrow('No input provided');
-    await expect(encodeTextPng(Buffer.from([]), message)).rejects.toThrow('No input provided');
+    await expect(encodeTextPng(input, '')).rejects.toThrow(
+      'No message provided',
+    );
+    await expect(encodeTextPng('', message)).rejects.toThrow(
+      'No input provided',
+    );
+    await expect(
+      encodeTextPng(new File([], 'test.png'), message),
+    ).rejects.toThrow('No input provided');
+    await expect(encodeTextPng(Buffer.from([]), message)).rejects.toThrow(
+      'No input provided',
+    );
   });
 
   it('should throw if input is not a PNG image', async () => {
@@ -22,22 +35,30 @@ describe('encode png - error handling', () => {
 
     // Buffer
     const input = fs.readFileSync(inputJpegPath);
-    await expect(encodeTextPng(input, 'test')).rejects.toThrow('Error: Input file must be a PNG image');
+    await expect(encodeTextPng(input, 'test')).rejects.toThrow(
+      'Error: Input file must be a PNG image',
+    );
 
     // File
     const file = new File([input], 'test.jpg', { type: 'image/jpeg' });
-    await expect(encodeTextPng(file, 'test')).rejects.toThrow('File is not a valid png image');
+    await expect(encodeTextPng(file, 'test')).rejects.toThrow(
+      'File is not a valid png image',
+    );
 
     // String
     const inputString = fs.readFileSync(inputJpegPath, 'base64');
-    await expect(encodeTextPng(inputString, 'test')).rejects.toThrow('Input string is not a valid png image');
+    await expect(encodeTextPng(inputString, 'test')).rejects.toThrow(
+      'Input string is not a valid png image',
+    );
   });
 
   it('should throw if message is too long for image to fit', async () => {
     const inputPath = getInputPath('tiny_test.png');
     const input = fs.readFileSync(inputPath);
     const message = 'Hello, world!'.repeat(1000);
-    await expect(encodeTextPng(input, message)).rejects.toThrow(/Message too large for image! Available space = \d+ bits, message size = \d+ bits/);
+    await expect(encodeTextPng(input, message)).rejects.toThrow(
+      /Message too large for image! Available space = \d+ bits, message size = \d+ bits/,
+    );
   });
 });
 
@@ -46,10 +67,18 @@ describe('encode jpeg - error handling', () => {
     const inputPath = getInputPath('test.jpg');
     const input = fs.readFileSync(inputPath);
     const message = 'test';
-    await expect(encodeTextJpeg(input, '')).rejects.toThrow('No message provided');
-    await expect(encodeTextJpeg('', message)).rejects.toThrow('No input provided');
-    await expect(encodeTextJpeg(new File([], 'test.jpg'), message)).rejects.toThrow('No input provided');
-    await expect(encodeTextJpeg(Buffer.from([]), message)).rejects.toThrow('No input provided');
+    await expect(encodeTextJpeg(input, '')).rejects.toThrow(
+      'No message provided',
+    );
+    await expect(encodeTextJpeg('', message)).rejects.toThrow(
+      'No input provided',
+    );
+    await expect(
+      encodeTextJpeg(new File([], 'test.jpg'), message),
+    ).rejects.toThrow('No input provided');
+    await expect(encodeTextJpeg(Buffer.from([]), message)).rejects.toThrow(
+      'No input provided',
+    );
   });
 
   it('should throw if input is not a JPEG image', async () => {
@@ -57,22 +86,30 @@ describe('encode jpeg - error handling', () => {
 
     // Buffer
     const input = fs.readFileSync(inputPngPath);
-    await expect(encodeTextJpeg(input, 'test')).rejects.toThrow('Error: Input file must be a JPEG image');
+    await expect(encodeTextJpeg(input, 'test')).rejects.toThrow(
+      'Error: Input file must be a JPEG image',
+    );
 
     // File
     const file = new File([input], 'test.png', { type: 'image/png' });
-    await expect(encodeTextJpeg(file, 'test')).rejects.toThrow('File is not a valid jpeg image');
+    await expect(encodeTextJpeg(file, 'test')).rejects.toThrow(
+      'File is not a valid jpeg image',
+    );
 
     // String
     const inputString = fs.readFileSync(inputPngPath, 'base64');
-    await expect(encodeTextJpeg(inputString, 'test')).rejects.toThrow('Input string is not a valid jpeg image');
+    await expect(encodeTextJpeg(inputString, 'test')).rejects.toThrow(
+      'Input string is not a valid jpeg image',
+    );
   });
 
   it('should throw if message is too long for image to fit', async () => {
     const inputPath = getInputPath('tiny_test.jpg');
     const input = fs.readFileSync(inputPath);
     const message = 'Hello, world!'.repeat(1000);
-    await expect(encodeTextJpeg(input, message)).rejects.toThrow(/Message too large for image! Available space = \d+ bits, message size = \d+ bits/);
+    await expect(encodeTextJpeg(input, message)).rejects.toThrow(
+      /Message too large for image! Available space = \d+ bits, message size = \d+ bits/,
+    );
   });
 });
 
@@ -119,7 +156,9 @@ describe('png - full process', () => {
     const output = await encodeTextPng(input, message, header);
     expect(output).toBeInstanceOf(Blob);
     const outputFile = Buffer.from(await output.arrayBuffer());
-    await expect(decodeTextPng(outputFile, 'different-header')).rejects.toThrow('No message found');
+    await expect(decodeTextPng(outputFile, 'different-header')).rejects.toThrow(
+      'No message found',
+    );
   });
 });
 
@@ -155,6 +194,8 @@ describe('jpeg - full process', () => {
     const output = await encodeTextJpeg(input, message, header);
     expect(output).toBeInstanceOf(Blob);
     const outputFile = Buffer.from(await output.arrayBuffer());
-    await expect(decodeTextJpeg(outputFile, 'different-header')).rejects.toThrow('No message found');
+    await expect(
+      decodeTextJpeg(outputFile, 'different-header'),
+    ).rejects.toThrow('No message found');
   });
 });

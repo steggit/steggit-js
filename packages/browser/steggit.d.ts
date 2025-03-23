@@ -1,20 +1,43 @@
 declare module 'dist/steggit_emcc.js' {
-
   interface StegoModule {
-    _encode_png: (inputPtr: number | null, outputPtr: number | null, messagePtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
-    _encode_jpeg: (inputPtr: number | null, outputPtr: number | null, messagePtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
-    _decode_png: (inputPtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
-    _decode_jpeg: (inputPtr: number | null, headerPtr: number | null, errorPtrPtr: number | null) => number;
+    _encode_png: (
+      inputPtr: number | null,
+      outputPtr: number | null,
+      messagePtr: number | null,
+      headerPtr: number | null,
+      errorPtrPtr: number | null,
+    ) => number;
+    _encode_jpeg: (
+      inputPtr: number | null,
+      outputPtr: number | null,
+      messagePtr: number | null,
+      headerPtr: number | null,
+      errorPtrPtr: number | null,
+    ) => number;
+    _decode_png: (
+      inputPtr: number | null,
+      headerPtr: number | null,
+      errorPtrPtr: number | null,
+    ) => number;
+    _decode_jpeg: (
+      inputPtr: number | null,
+      headerPtr: number | null,
+      errorPtrPtr: number | null,
+    ) => number;
 
     cwrap: (
       funcName: string,
       returnType: string,
-      argTypes: string[]
+      argTypes: string[],
     ) => (...args: any[]) => any;
     UTF8ToString: (ptr: number) => string;
     _malloc: (size: number) => number;
     _free: (ptr: number) => void;
-    stringToUTF8: (str: string, outPtr: number, maxBytesToWrite: number) => void;
+    stringToUTF8: (
+      str: string,
+      outPtr: number,
+      maxBytesToWrite: number,
+    ) => void;
     getValue: (ptr: number, type: string) => number;
     setValue: (ptr: number, index: number, value: string) => void;
     FS: {
