@@ -3580,6 +3580,7 @@ __metadata:
   resolution: "@steggit/utils@workspace:packages/utils"
   dependencies:
     "@cloudventure/jest-transformer-esbuild": "npm:^1.0.13"
+    "@types/dotenv": "npm:^8.2.3"
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^20.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
@@ -3670,6 +3671,15 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/4b7b561f195f779d07f973801a9f15d77cd58ceb67e817459688b11cc735288d30de050f445c91f4cd2c007fa86824e59a6e3cde602d150b828c4474f6e67be5
+  languageName: node
+  linkType: hard
+
+"@types/dotenv@npm:^8.2.3":
+  version: 8.2.3
+  resolution: "@types/dotenv@npm:8.2.3"
+  dependencies:
+    dotenv: "npm:*"
+  checksum: 10c0/af9178da617959cddc8259aaa3f16c474523ead469f4a03490de2f2d1cafc8615c5d0d1ed3fad837096218126421c38cd46b4065548bb5aee3cc002c518b69f7
   languageName: node
   linkType: hard
 
@@ -5432,7 +5442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.3.1, dotenv@npm:^16.4.7":
+"dotenv@npm:*, dotenv@npm:^16.3.1, dotenv@npm:^16.4.7":
   version: 16.4.7
   resolution: "dotenv@npm:16.4.7"
   checksum: 10c0/be9f597e36a8daf834452daa1f4cc30e5375a5968f98f46d89b16b983c567398a330580c88395069a77473943c06b877d1ca25b4afafcdd6d4adb549e8293462
@@ -11350,8 +11360,14 @@ __metadata:
     "@types/babel__core": "npm:^7"
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^20.0.0"
+    "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     babel-plugin-jest-hoist: "npm:^29.6.3"
     eslint: "npm:^8.56.0"
+    eslint-config-airbnb-base: "npm:^15.0.0"
+    eslint-config-prettier: "npm:^9.1.0"
+    eslint-plugin-import: "npm:^2.29.1"
+    eslint-plugin-prettier: "npm:^5.1.3"
     husky: "npm:^9.1.7"
     jest-util: "npm:^29.7.0"
     prettier: "npm:^3.5.3"

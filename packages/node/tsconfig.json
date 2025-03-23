@@ -1,21 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ES2020",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": [
-    "index.d.ts",
-  ],
+  "extends": "../../tsconfig.json",
   "exclude": [
-    "node_modules",
     "build",
-    "**/*.test.ts"
+    "__tests__"
   ]
 }
