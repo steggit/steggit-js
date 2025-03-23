@@ -12,6 +12,11 @@
     "commit:all": "git add . && commit",
     "prepare": "husky",
     "release": "multi-semantic-release",
+    "lint:utils": "eslint packages/utils",
+    "lint:browser": "eslint packages/browser",
+    "lint:node": "eslint packages/node",
+    "lint:core": "eslint packages/core",
+    "lint:all": "yarn lint:utils && yarn lint:browser && yarn lint:node && yarn lint:core",
     "build:core": "yarn workspace @steggit/core build",
     "build:browser": "yarn workspace @steggit/browser build",
     "build:node": "yarn workspace @steggit/node build",
@@ -61,6 +66,7 @@
     "prettier": "^3.5.3",
     "semantic-release": "^24.2.1",
     "semantic-release-replace-plugin": "^1.2.7",
+    "tsup": "^8.4.0",
     "typescript": "^5.8.2"
   },
   "stableVersion": "1.0.0"

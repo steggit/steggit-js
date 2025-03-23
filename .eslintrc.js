@@ -2,8 +2,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   extends: [
     'airbnb-base',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-type-checked',
+    'plugin:@typescript-eslint/strict-type-checked',
     'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',
@@ -12,7 +11,7 @@ module.exports = {
     project: ['./tsconfig.eslint.json', './packages/*/tsconfig.json'],
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['dist/**', '.eslintrc.js'],
+  ignorePatterns: ['**/*/dist/**', '.eslintrc.js'],
   root: true,
   rules: {
     'import/prefer-default-export': [

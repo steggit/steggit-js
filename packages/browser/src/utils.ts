@@ -55,7 +55,7 @@ export async function writeInputToFS(
       throw new Error('Invalid input type');
     }
   } catch (error: unknown) {
-    const errorMessage = (error as Error)?.message || 'Unknown error';
+    const errorMessage = (error as Error).message || 'Unknown error';
     throw new Error(`Failed to write input file: ${errorMessage}`);
   }
 }
@@ -76,13 +76,13 @@ export function allocateMemory(
   hdr: string,
   mod: StegoModule,
 ): Memory {
-  const msgLength = msg?.length ? msg.length + 1 : 1024;
+  const msgLength = msg.length ? msg.length + 1 : 1024;
   const input = mod._malloc(inputFilename.length + 1);
   const output = mod._malloc(outputFilename.length + 1);
   const message = mod._malloc(msgLength);
   const error = mod._malloc(4);
   let header: number | null = null;
-  if (hdr?.length) {
+  if (hdr.length) {
     header = mod._malloc(hdr.length + 1);
     mod.stringToUTF8(hdr, header, hdr.length + 1);
   }

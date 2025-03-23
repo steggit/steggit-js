@@ -7,7 +7,9 @@ export default function generateEncryptionKey(
   length = DEFAULT_KEY_LENGTH,
   ctx = 'default',
 ) {
-  const pseudoRandomKey = createHmac('sha256', secret).update(input).digest();
+  const pseudoRandomKey = createHmac('sha256', secret)
+    .update(input)
+    .digest() as Buffer<ArrayBuffer>;
 
   let previousBlock = Buffer.alloc(0);
   let outputKeyMaterial = Buffer.alloc(0);
@@ -17,7 +19,7 @@ export default function generateEncryptionKey(
       .update(
         Buffer.concat([previousBlock, Buffer.from(ctx), Buffer.from([i + 1])]),
       )
-      .digest();
+      .digest() as Buffer<ArrayBuffer>;
 
     outputKeyMaterial = Buffer.concat([outputKeyMaterial, previousBlock]);
   }

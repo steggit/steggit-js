@@ -66,7 +66,7 @@ export async function encodeTextPng(
   } catch (error: unknown) {
     console.error('UNHANDLED ERROR', error);
     result = -1;
-    errorMessage = (error as Error)?.message || 'Unknown error';
+    errorMessage = (error as Error).message || 'Unknown error';
   } finally {
     freeMemory(memory, mod);
     mod.FS.unlink(inputFilename);
@@ -133,7 +133,7 @@ export async function encodeTextJpeg(
   } catch (error: unknown) {
     console.error('UNHANDLED ERROR', error);
     result = -1;
-    errorMessage = (error as Error)?.message || 'Unknown error';
+    errorMessage = (error as Error).message || 'Unknown error';
   } finally {
     freeMemory(memory, mod);
     mod.FS.unlink(inputFilename);
@@ -178,10 +178,10 @@ export async function decodeTextPng(
     if (result) {
       output = mod.UTF8ToString(result);
     }
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('UNHANDLED ERROR', error);
     result = -1;
-    errorMessage = (error as Error)?.message || 'Unknown error';
+    errorMessage = (error as Error).message || 'Unknown error';
   } finally {
     freeMemory(memory, mod);
     mod.FS.unlink(inputFilename);
@@ -190,7 +190,7 @@ export async function decodeTextPng(
   if (result !== 0) {
     throw new Error(errorMessage);
   }
-  if (!output?.length) {
+  if (!output.length) {
     throw new Error('No message found');
   }
 
@@ -226,7 +226,7 @@ export async function decodeTextJpeg(
   } catch (error: unknown) {
     console.error('UNHANDLED ERROR', error);
     result = -1;
-    errorMessage = (error as Error)?.message || 'Unknown error';
+    errorMessage = (error as Error).message || 'Unknown error';
   } finally {
     freeMemory(memory, mod);
     mod.FS.unlink(inputFilename);
@@ -235,7 +235,7 @@ export async function decodeTextJpeg(
   if (result !== 0) {
     throw new Error(errorMessage);
   }
-  if (!output?.length) {
+  if (!output.length) {
     throw new Error('No message found');
   }
 
