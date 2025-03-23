@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+// eslint-disable-next-line import/extensions
 import ModuleFactory, { type StegoModule } from 'dist/steggit_emcc.js';
 import {
   allocateMemory,
@@ -185,6 +187,9 @@ export async function decodeTextPng(
     mod.FS.unlink(inputFilename);
   }
 
+  if (result !== 0) {
+    throw new Error(errorMessage);
+  }
   if (!output?.length) {
     throw new Error('No message found');
   }
@@ -227,6 +232,9 @@ export async function decodeTextJpeg(
     mod.FS.unlink(inputFilename);
   }
 
+  if (result !== 0) {
+    throw new Error(errorMessage);
+  }
   if (!output?.length) {
     throw new Error('No message found');
   }

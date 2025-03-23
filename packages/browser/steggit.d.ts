@@ -29,7 +29,7 @@ declare module 'dist/steggit_emcc.js' {
       funcName: string,
       returnType: string,
       argTypes: string[],
-    ) => (...args: any[]) => any;
+    ) => (...args: unknown[]) => unknown;
     UTF8ToString: (ptr: number) => string;
     _malloc: (size: number) => number;
     _free: (ptr: number) => void;

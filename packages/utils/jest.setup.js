@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable */
 const env = require('dotenv');
 
 const testEnv = env.config({ path: 'test.env' });

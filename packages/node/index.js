@@ -1,3 +1,4 @@
+/* eslint-disable */
 const stego = require('./build/Release/stego.node');
 
 // CommonJS exports
@@ -5,7 +6,7 @@ module.exports = {
   encodeTextPng: stego.encodeTextPng,
   encodeTextJpeg: stego.encodeTextJpeg,
   decodeTextPng: stego.decodeTextPng,
-  decodeTextJpeg: stego.decodeTextJpeg
+  decodeTextJpeg: stego.decodeTextJpeg,
 };
 
 // TypeScript CommonJS interop

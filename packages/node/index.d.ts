@@ -6,7 +6,12 @@
  * @param header - Header to use for the encoded message. If not provided, the default header will be used.
  * @returns Promise<void>
  */
-export async function encodeTextPng(inputPath: string, outputPath: string, message: string, header?: string): Promise<void>;
+export async function encodeTextPng(
+  inputPath: string,
+  outputPath: string,
+  message: string,
+  header?: string,
+): Promise<void>;
 
 /**
  * Decodes text from a PNG image using LSB steganography
@@ -14,7 +19,10 @@ export async function encodeTextPng(inputPath: string, outputPath: string, messa
  * @param header - Header to use for the decoded message. If not provided, the default header will be used.
  * @returns Promise<string>
  */
-export async function decodeTextPng(inputPath: string, header?: string): Promise<string>;
+export async function decodeTextPng(
+  inputPath: string,
+  header?: string,
+): Promise<string>;
 
 /**
  * Encodes text into a JPEG image using DCT steganography
@@ -24,7 +32,12 @@ export async function decodeTextPng(inputPath: string, header?: string): Promise
  * @param header - Header to use for the encoded message. If not provided, the default header will be used.
  * @returns Promise<void>
  */
-export async function encodeTextJpeg(inputPath: string, outputPath: string, message: string, header?: string): Promise<void>;
+export async function encodeTextJpeg(
+  inputPath: string,
+  outputPath: string,
+  message: string,
+  header?: string,
+): Promise<void>;
 
 /**
  * Decodes text from a JPEG image using DCT steganography
@@ -32,8 +45,10 @@ export async function encodeTextJpeg(inputPath: string, outputPath: string, mess
  * @param header - Header to use for the decoded message. If not provided, the default header will be used.
  * @returns Promise<string>
  */
-export async function decodeTextJpeg(inputPath: string, header?: string): Promise<string>;
-
+export async function decodeTextJpeg(
+  inputPath: string,
+  header?: string,
+): Promise<string>;
 
 declare const stego: {
   encodeTextPng: typeof encodeTextPng;
@@ -42,4 +57,4 @@ declare const stego: {
   decodeTextJpeg: typeof decodeTextJpeg;
 };
 
-export default stego; 
+export default stego;

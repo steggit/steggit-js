@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+// eslint-disable-next-line import/extensions
 import { StegoModule } from 'dist/steggit_emcc.js';
 
 interface Memory {
@@ -79,7 +81,7 @@ export function allocateMemory(
   const output = mod._malloc(outputFilename.length + 1);
   const message = mod._malloc(msgLength);
   const error = mod._malloc(4);
-  let header = null;
+  let header: number | null = null;
   if (hdr?.length) {
     header = mod._malloc(hdr.length + 1);
     mod.stringToUTF8(hdr, header, hdr.length + 1);
