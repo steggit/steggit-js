@@ -3,5 +3,5 @@ export { default as decryptMessage } from './decryptMessage';
 export { default as generateEncryptionKey } from './generateEncryptionKey';
 export { default as stringifyEncryptedMessage } from './stringifyEncryptedMessage';
 export { default as parseEncryptedMessage } from './parseEncryptedMessage';
-export { DEFAULT_KEY_LENGTH } from './const';
+export { DEFAULT_KEY_LENGTH, DEFAULT_IV_LENGTH } from './const';
 export type { EncryptedMessage } from './types';
