@@ -12,10 +12,10 @@
   },
   "include": [
     "index.d.ts",
-    "**/*.test.ts"
   ],
   "exclude": [
     "node_modules",
-    "build"
+    "build",
+    "**/*.test.ts"
   ]
 }
