@@ -1,5 +1,5 @@
 {
-  "name": "steggit-js",
+  "name": "steggit-js-monorepo",
   "version": "1.0.0",
   "description": "Monorepo for Stegg.it",
   "main": "index.js",
@@ -28,7 +28,7 @@
     "url": "git+https://github.com/james-cohen/steggit.git"
   },
   "author": "james-cohen",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/james-cohen/steggit/issues"
   },
