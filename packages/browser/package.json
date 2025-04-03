@@ -25,11 +25,11 @@
   "author": "james-cohen",
   "license": "ISC",
   "devDependencies": {
-    "@cloudventure/jest-transformer-esbuild": "^1.0.14",
     "@types/node": "^22.13.11",
     "babel-plugin-jest-hoist": "^29.6.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "jest-esbuild": "^0.3.0",
     "ts-jest": "^29.2.6",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"

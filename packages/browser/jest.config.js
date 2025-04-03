@@ -7,6 +7,6 @@ module.exports = {
     '^dist/steggit_emcc.js$': '<rootDir>/dist/steggit_emcc.js',
   },
   transform: {
-    '^.+\\.tsx?$': ['@cloudventure/jest-transformer-esbuild'],
+    '^.+\\.tsx?$': ['jest-esbuild'],
   },
 };
