@@ -5,8 +5,6 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "git:clean": "git fetch --prune && bash ./scripts/delete-merged-branches.sh",
-    "init:dev": "yarn mysql:start && yarn appsync:offline",
     "postinstall": "husky",
     "commit:staged": "commit",
     "commit:all": "git add . && commit",
@@ -25,14 +23,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/james-cohen/steggit.git"
+    "url": "git+https://github.com/steggit/steggit-js.git"
   },
   "author": "james-cohen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/james-cohen/steggit/issues"
+    "url": "https://github.com/steggit/steggit-js/issues"
   },
-  "homepage": "https://github.com/james-cohen/steggit#readme",
+  "homepage": "https://github.com/steggit/steggit-js",
   "workspaces": {
     "packages": [
       "packages/*"

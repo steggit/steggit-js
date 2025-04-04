@@ -5,6 +5,9 @@
     "test": "jest",
     "build": "tsup src/index.ts --outDir dist --format esm,cjs --platform node --dts"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
