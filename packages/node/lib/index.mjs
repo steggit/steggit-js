@@ -1,10 +1,14 @@
 /* eslint-disable */
 import { createRequire } from 'module';
 import path from 'path';
-const require = createRequire(import.meta.url);
+import { fileURLToPath } from 'url';
 
-const load = require('node-gyp-build');
-const steggit = load(path.resolve(path.dirname(import.meta.url), '..'));
+const dynamicRequire = createRequire(import.meta.url);
+const load = dynamicRequire('node-gyp-build');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const steggit = load(path.resolve(__dirname, '..'));
 
 export const encodeTextPng = steggit.encodeTextPng;
 export const encodeTextJpeg = steggit.encodeTextJpeg;
