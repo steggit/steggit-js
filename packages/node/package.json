@@ -1,32 +1,40 @@
 {
   "name": "@steggit/node",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Node bindings for image steganography",
-  "main": "./index.js",
-  "module": "./index.mjs",
-  "types": "./index.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "lib",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
     ".": {
-      "require": "./index.js",
-      "import": "./index.mjs",
-      "types": "./index.d.ts"
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs",
+      "types": "./lib/index.d.ts"
     }
   },
   "scripts": {
     "test": "jest",
-    "build": "node-gyp configure build",
+    "cp:core": "mkdir -p src && cp -r ../core/src/* src/ && cp -r ../core/include/* src/",
+    "build": "npm run cp:core && node-gyp configure build",
     "install": "node-gyp rebuild"
   },
   "author": "james-cohen",
-  "license": "ISC",
+  "license": "MIT",
   "gypfile": true,
-  "type": "commonjs",
   "devDependencies": {
     "jest": "^29.7.0",
-    "node-gyp": "^11.1.0",
     "ts-jest": "^29.2.6"
+  },
+  "peerDependencies": {
+    "node-gyp": "^11.1.0"
   }
 }

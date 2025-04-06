@@ -5,7 +5,7 @@ import {
   encodeTextJpeg,
   decodeTextPng,
   decodeTextJpeg,
-} from '../index';
+} from '../lib/index';
 
 const getInputPath = (name: string) => {
   return path.join(__dirname, '..', '__fixtures__', name);

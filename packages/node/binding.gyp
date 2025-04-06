@@ -1,30 +1,26 @@
 {
   "targets": [
     {
-      "target_name": "stego", 
+      "target_name": "steggit_core", 
       "sources": [
-        "../core/src/general_utils.c",
-        "../core/src/jpeg_utils.c",
-        "../core/src/png_utils.c",
-        "../core/src/wrapper.c",
-        "../core/src/wrapper_utils.c"
+        "src/general_utils.c",
+        "src/jpeg_utils.c",
+        "src/png_utils.c",
+        "src/wrapper.c",
+        "src/wrapper_utils.c"
       ],
       "include_dirs": [
-        "../core/src",
-        "../core/include",
-        "/opt/homebrew/opt/jpeg-turbo/include",
-        "/opt/homebrew/opt/libpng/include",
+        "src",
+        "<!(pkg-config --cflags-only-I libpng | sed 's/-I//g')",
+        "<!(pkg-config --cflags-only-I libjpeg | sed 's/-I//g')"
       ],
       "cflags": [
         "-Wall",
         "-g"
       ],
       "libraries": [
-        "-L/opt/homebrew/opt/jpeg-turbo/lib",
-        "-L/opt/homebrew/opt/libpng/lib",
-        "-ljpeg",
-        "-lpng"
-      ]
+        "<!(pkg-config --libs libpng libjpeg)"
+      ],
     }
   ]
 }

@@ -1,5 +1,5 @@
 /* eslint-disable */
-const stego = require('./build/Release/stego.node');
+const stego = require('../build/Release/steggit_core.node');
 
 // CommonJS exports
 module.exports = {
