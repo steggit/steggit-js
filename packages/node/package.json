@@ -1,13 +1,31 @@
 {
   "name": "@steggit/node",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Node bindings for image steganography",
-  "main": "./lib/index.js",
+  "main": "./lib/index.cjs",
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
-  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules $(yarn bin jest)",
+    "cp:core": "mkdir -p src && cp -r ../core/src/* src/ && cp -r ../core/include/* src/",
+    "build": "yarn cp:core && node-gyp configure build",
+    "install": "node-gyp-build",
+    "prebuild": "prebuildify --napi",
+    "prebuild:aws:arm64": "bash scripts/platform-prebuild.sh public.ecr.aws/lambda/nodejs:22-arm64",
+    "prebuild:aws:x86_64": "bash scripts/platform-prebuild.sh public.ecr.aws/lambda/nodejs:22-x86_64",
+    "prebuild:darwin:arm64": "yarn cp:core && cd $(git rev-parse --show-toplevel) && yarn install && cd packages/node && yarn prebuild",
+    "prebuild:darwin:x86_64": "arch -x86_64 yarn install && yarn prebuild --platform=darwin --arch=x64",
+    "prebuild:all": "yarn prebuild:aws:arm64 && yarn prebuild:aws:x86_64 && yarn prebuild:darwin:x86_64 && yarn prebuild"
   },
   "files": [
     "lib",
@@ -25,25 +43,6 @@
     "x64",
     "arm64"
   ],
-  "exports": {
-    ".": {
-      "require": "./lib/index.js",
-      "import": "./lib/index.mjs",
-      "types": "./lib/index.d.ts"
-    }
-  },
-  "scripts": {
-    "test": "node --experimental-vm-modules $(yarn bin jest)",
-    "cp:core": "mkdir -p src && cp -r ../core/src/* src/ && cp -r ../core/include/* src/",
-    "build": "yarn cp:core && node-gyp configure build",
-    "install": "node-gyp-build",
-    "prebuild": "prebuildify --napi",
-    "prebuild:aws:arm64": "bash scripts/platform-prebuild.sh public.ecr.aws/lambda/nodejs:22-arm64",
-    "prebuild:aws:x86_64": "bash scripts/platform-prebuild.sh public.ecr.aws/lambda/nodejs:22-x86_64",
-    "prebuild:darwin:arm64": "yarn cp:core && cd $(git rev-parse --show-toplevel) && yarn install && cd packages/node && yarn prebuild",
-    "prebuild:darwin:x86_64": "arch -x86_64 yarn install && yarn prebuild --platform=darwin --arch=x64",
-    "prebuild:all": "yarn prebuild:aws:arm64 && yarn prebuild:aws:x86_64 && yarn prebuild:darwin:x86_64 && yarn prebuild"
-  },
   "author": "james-cohen",
   "license": "MIT",
   "gypfile": true,
