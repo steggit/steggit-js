@@ -57,7 +57,6 @@
     "node-gyp": "^11.1.0"
   },
   "dependencies": {
-    "@steggit-dev/node": "^0.1.0",
     "node-gyp-build": "^4.8.4"
   }
 }

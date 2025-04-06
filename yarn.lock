@@ -2003,17 +2003,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@steggit-dev/node@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@steggit-dev/node@npm:0.1.0"
-  dependencies:
-    node-gyp-build: "npm:^4.8.4"
-  peerDependencies:
-    node-gyp: ^11.1.0
-  conditions: (os=darwin | os=linux) & (cpu=x64 | cpu=arm64)
-  languageName: node
-  linkType: hard
-
 "@steggit/browser@workspace:packages/browser":
   version: 0.0.0-use.local
   resolution: "@steggit/browser@workspace:packages/browser"
@@ -2039,7 +2028,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@steggit/node@workspace:packages/node"
   dependencies:
-    "@steggit-dev/node": "npm:^0.1.0"
     jest: "npm:^29.7.0"
     jest-esbuild: "npm:^0.3.0"
     node-gyp-build: "npm:^4.8.4"
