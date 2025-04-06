@@ -117,7 +117,8 @@ int embed_message_in_jpeg(const char *input_path, const char *output_path,
   strcpy(combined_message, header);
   strcat(combined_message, message);
   char terminator = TERMINATOR;
-  strncat(combined_message, &terminator, 1);
+  combined_message[strlen(header) + strlen(message)] = terminator;
+  combined_message[strlen(header) + strlen(message) + 1] = '\0';
 
   cinfo.err = jpeg_std_error(&jerr);
   jpeg_create_decompress(&cinfo);

@@ -5,7 +5,7 @@
 #include <stddef.h> // For size_t - not included in emscripten jpeg port
 #include <stdio.h>  // For FILE - not included in emscripten jpeg port
 #else
-#include <_stdio.h>
+#include <stdio.h>
 #endif
 
 #include <jpeglib.h>

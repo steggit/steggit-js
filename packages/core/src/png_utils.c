@@ -93,7 +93,8 @@ int embed_message_in_png(const char *input_file, const char *output_file,
   strcat(combined_message, message);
 
   char terminator = TERMINATOR;
-  strncat(combined_message, &terminator, 1);
+  combined_message[strlen(header) + strlen(message)] = terminator;
+  combined_message[strlen(header) + strlen(message) + 1] = '\0';
 
   size_t combined_length = strlen(combined_message);
   size_t required_bits = combined_length * 8;

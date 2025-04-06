@@ -25,7 +25,7 @@
     "test": "jest",
     "cp:core": "mkdir -p src && cp -r ../core/src/* src/ && cp -r ../core/include/* src/",
     "build": "yarn cp:core && node-gyp configure build",
-    "install": "node-gyp-build",
+    "install": "yarn cp:core && node-gyp-build",
     "prebuild": "yarn prebuildify --napi"
   },
   "author": "james-cohen",
