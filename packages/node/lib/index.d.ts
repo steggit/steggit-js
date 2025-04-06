@@ -50,11 +50,11 @@ export async function decodeTextJpeg(
   header?: string,
 ): Promise<string>;
 
-declare const stego: {
+declare const steggit: {
   encodeTextPng: typeof encodeTextPng;
   encodeTextJpeg: typeof encodeTextJpeg;
   decodeTextPng: typeof decodeTextPng;
   decodeTextJpeg: typeof decodeTextJpeg;
 };
 
-export default stego;
+export default steggit;

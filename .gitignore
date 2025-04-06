@@ -133,6 +133,7 @@ dist
 # node-gyp
 node_modules/
 build/
+prebuilds/
 
 # MacOS
 .DS_Store

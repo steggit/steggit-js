@@ -24,17 +24,22 @@
   "scripts": {
     "test": "jest",
     "cp:core": "mkdir -p src && cp -r ../core/src/* src/ && cp -r ../core/include/* src/",
-    "build": "npm run cp:core && node-gyp configure build",
-    "install": "node-gyp rebuild"
+    "build": "yarn cp:core && node-gyp configure build",
+    "install": "node-gyp-build",
+    "prebuild": "yarn prebuildify --napi"
   },
   "author": "james-cohen",
   "license": "MIT",
   "gypfile": true,
   "devDependencies": {
     "jest": "^29.7.0",
+    "prebuildify": "^6.0.1",
     "ts-jest": "^29.2.6"
   },
   "peerDependencies": {
     "node-gyp": "^11.1.0"
+  },
+  "dependencies": {
+    "node-gyp-build": "^4.8.4"
   }
 }
