@@ -1,9 +1,17 @@
-module.exports = {
-  preset: 'ts-jest',
+const config = {
+  extensionsToTreatAsEsm: ['.ts'],
+  verbose: true,
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
-  testMatch: ['**/*.test.ts'],
-  moduleFileExtensions: ['ts', 'js'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'jest-esbuild',
+      {
+        format: 'esm',
+        target: 'esnext',
+      },
+    ],
   },
 };
+
+export default config;

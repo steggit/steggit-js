@@ -1,11 +1,15 @@
 import fs from 'node:fs';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   encodeTextPng,
   encodeTextJpeg,
   decodeTextPng,
   decodeTextJpeg,
 } from '../lib/index';
+
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const getInputPath = (name: string) => {
   return path.join(__dirname, '..', '__fixtures__', name);

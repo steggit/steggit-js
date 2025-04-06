@@ -1,19 +1,14 @@
 /* eslint-disable */
-const path = require('path');
-const load = require('node-gyp-build');
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const steggit = load(path.join(__dirname, '..'));
+const dynamicRequire = createRequire(import.meta.url);
+const load = dynamicRequire('node-gyp-build');
 
-// CommonJS exports
-module.exports = {
-  encodeTextPng: steggit.encodeTextPng,
-  encodeTextJpeg: steggit.encodeTextJpeg,
-  decodeTextPng: steggit.decodeTextPng,
-  decodeTextJpeg: steggit.decodeTextJpeg,
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const steggit = load(path.resolve(__dirname, '..'));
 
-// TypeScript CommonJS interop
-module.exports.encodeTextPng = steggit.encodeTextPng;
-module.exports.encodeTextJpeg = steggit.encodeTextJpeg;
-module.exports.decodeTextPng = steggit.decodeTextPng;
-module.exports.decodeTextJpeg = steggit.decodeTextJpeg;
+export const { encodeTextPng, encodeTextJpeg, decodeTextPng, decodeTextJpeg } =
+  steggit;

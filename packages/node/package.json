@@ -1,10 +1,11 @@
 {
   "name": "@steggit/node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Node bindings for image steganography",
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
@@ -32,7 +33,7 @@
     }
   },
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules $(yarn bin jest)",
     "cp:core": "mkdir -p src && cp -r ../core/src/* src/ && cp -r ../core/include/* src/",
     "build": "yarn cp:core && node-gyp configure build",
     "install": "node-gyp-build",
@@ -48,6 +49,7 @@
   "gypfile": true,
   "devDependencies": {
     "jest": "^29.7.0",
+    "jest-esbuild": "^0.3.0",
     "prebuildify": "^6.0.1",
     "ts-jest": "^29.2.6"
   },
@@ -55,6 +57,7 @@
     "node-gyp": "^11.1.0"
   },
   "dependencies": {
+    "@steggit-dev/node": "^0.1.0",
     "node-gyp-build": "^4.8.4"
   }
 }
