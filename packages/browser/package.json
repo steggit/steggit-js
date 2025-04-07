@@ -27,7 +27,7 @@
     "README.md"
   ],
   "author": "james-cohen",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.13.11",
     "babel-plugin-jest-hoist": "^29.6.3",

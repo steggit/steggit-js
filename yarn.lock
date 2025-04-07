@@ -2030,11 +2030,10 @@ __metadata:
   dependencies:
     jest: "npm:^29.7.0"
     jest-esbuild: "npm:^0.3.0"
+    node-gyp: "npm:^11.1.0"
     node-gyp-build: "npm:^4.8.4"
     prebuildify: "npm:^6.0.1"
     ts-jest: "npm:^29.2.6"
-  peerDependencies:
-    node-gyp: ^11.1.0
   languageName: unknown
   linkType: soft
 
@@ -7756,7 +7755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^11.2.0":
+"node-gyp@npm:^11.1.0, node-gyp@npm:^11.2.0":
   version: 11.2.0
   resolution: "node-gyp@npm:11.2.0"
   dependencies:

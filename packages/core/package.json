@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Core steganography module",
   "author": "james-cohen",
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "src",
     "include"
