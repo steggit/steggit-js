@@ -5,7 +5,7 @@ const config = {
   setupFilesAfterEnv: ['./jest.setup.js'],
   preset: 'ts-jest/presets/default-esm',
   moduleNameMapper: {
-    '^dist/steggit_emcc.js$': '<rootDir>/dist/steggit_emcc.js',
+    '^build/steggit_emcc.js$': '<rootDir>/build/steggit_emcc.js',
   },
   transform: {
     '^.+\\.tsx?$': [

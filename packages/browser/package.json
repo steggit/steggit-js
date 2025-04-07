@@ -1,6 +1,6 @@
 {
   "name": "@steggit-js/browser",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "Browser bindings for core Steggit module",
   "types": "./dist/lib/index.d.ts",
   "main": "./dist/lib/index.js",
@@ -13,12 +13,13 @@
       "types": "./dist/lib/index.d.ts",
       "require": "./dist/lib/index.js",
       "import": "./dist/lib/index.mjs"
-    }
+    },
+    "./build/steggit_emcc.js": "./dist/build/steggit_emcc.js"
   },
   "scripts": {
     "test": "node --experimental-vm-modules $(yarn bin jest)",
     "build:wasm": "bash ./build.sh",
-    "bundle": "tsup src/index.ts --outDir dist/lib --format esm,cjs --platform browser --dts --external build/steggit_emcc.js",
+    "bundle": "tsup src/index.ts --outDir dist/lib --format esm,cjs --platform browser --dts --external @steggit-js/browser/build/steggit_emcc.js",
     "build": "yarn build:wasm && yarn bundle && cp -r build dist/"
   },
   "files": [

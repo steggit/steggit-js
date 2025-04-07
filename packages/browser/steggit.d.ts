@@ -1,4 +1,4 @@
-declare module 'build/steggit_emcc.js' {
+declare module '@steggit-js/browser/build/steggit_emcc.js' {
   interface StegoModule {
     _encode_png: (
       inputPtr: number | null,
