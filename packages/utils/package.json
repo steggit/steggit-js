@@ -1,7 +1,7 @@
 {
   "name": "@steggit-js/utils",
   "version": "0.1.0",
-  "description": "Utils for Steggit",
+  "description": "Utility functions for Steggit",
   "scripts": {
     "test": "node --experimental-vm-modules $(yarn bin jest)",
     "build": "tsup src/index.ts --outDir dist --format esm,cjs --platform node --dts"

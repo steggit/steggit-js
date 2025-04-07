@@ -1,12 +1,22 @@
-module.exports = {
+const config = {
   testEnvironment: 'jsdom',
   testMatch: ['**/*.test.ts'],
   moduleFileExtensions: ['ts', 'js'],
   setupFilesAfterEnv: ['./jest.setup.js'],
+  preset: 'ts-jest/presets/default-esm',
   moduleNameMapper: {
     '^dist/steggit_emcc.js$': '<rootDir>/dist/steggit_emcc.js',
   },
   transform: {
-    '^.+\\.tsx?$': ['jest-esbuild'],
+    '^.+\\.tsx?$': [
+      'jest-esbuild',
+      {
+        format: 'esm',
+        target: 'esnext',
+      },
+    ],
   },
+  extensionsToTreatAsEsm: ['.ts'],
 };
+
+export default config;
