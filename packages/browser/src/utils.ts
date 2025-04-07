@@ -10,12 +10,11 @@ interface Memory {
   error: number | null;
 }
 
-export function validateInput(input: File | Buffer | string, mimeType: string) {
+export function validateInput(input: File | string, mimeType: string) {
   if (
     !input ||
     (typeof input === 'string' && !input.length) ||
-    (input instanceof File && !input.size) ||
-    (input instanceof Buffer && !input.length)
+    (input instanceof File && !input.size)
   ) {
     throw new Error('No input provided');
   }
@@ -32,7 +31,7 @@ export function validateInput(input: File | Buffer | string, mimeType: string) {
 }
 
 export async function writeInputToFS(
-  input: File | Buffer | string,
+  input: File | string,
   inputFilename: string,
   mod: StegoModule,
 ) {
@@ -41,15 +40,16 @@ export async function writeInputToFS(
       const arrayBuffer = await input.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
       mod.FS.writeFile(inputFilename, buffer);
-    } else if (input instanceof Buffer) {
-      mod.FS.writeFile(inputFilename, input);
     } else if (typeof input === 'string') {
       if (!input.startsWith('data:')) {
         throw new Error('Input is not a data URL');
       }
       const base64Data = input.split(',')[1];
-      // Convert base64 to binary
-      const binaryData = Buffer.from(base64Data, 'base64');
+      const raw = atob(base64Data);
+      const binaryData = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i += 1) {
+        binaryData[i] = raw.charCodeAt(i);
+      }
       mod.FS.writeFile(inputFilename, binaryData);
     } else {
       throw new Error('Invalid input type');

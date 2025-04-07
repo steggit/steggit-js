@@ -92,19 +92,19 @@ async function decodeWithHeader() {
 
 ### Functions
 
-- `encodeTextPng(input: File | Buffer | string, message: string, header?: string): Promise<Blob>`
+- `encodeTextPng(input: File | string, message: string, header?: string): Promise<Blob>`
   - Encodes a text message into a PNG image
   - Returns a Blob containing the encoded image
 
-- `encodeTextJpeg(input: File | Buffer | string, message: string, header?: string): Promise<Blob>`
+- `encodeTextJpeg(input: File | string, message: string, header?: string): Promise<Blob>`
   - Encodes a text message into a JPEG image
   - Returns a Blob containing the encoded image
 
-- `decodeTextPng(input: File | Buffer | string, header?: string): Promise<string>`
+- `decodeTextPng(input: File | string, header?: string): Promise<string>`
   - Decodes a text message from a PNG image
   - Returns the decoded message as a string
 
-- `decodeTextJpeg(input: File | Buffer | string, header?: string): Promise<string>`
+- `decodeTextJpeg(input: File | string, header?: string): Promise<string>`
   - Decodes a text message from a JPEG image
   - Returns the decoded message as a string
 
@@ -112,7 +112,6 @@ async function decodeWithHeader() {
 
 The input parameter can be one of:
 - `File`: A browser File object (from file input)
-- `Buffer`: A Node.js Buffer (for server-side usage)
 - `string`: A data URL
 
 ## Development

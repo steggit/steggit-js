@@ -33,11 +33,7 @@ describe('encode png - error handling', () => {
   it('should throw if input is not a PNG image', async () => {
     const module = await loadSteggitModule();
     const inputJpegPath = getInputPath('test.jpg');
-
-    // Buffer
     const input = fs.readFileSync(inputJpegPath);
-    const invalidBufferResult = await module.encodeTextPng(input, 'test');
-    expect(invalidBufferResult).toEqual(1);
 
     // File
     const file = new File([input], 'test.jpg', { type: 'image/jpeg' });

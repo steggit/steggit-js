@@ -28,7 +28,7 @@ async function getModule(): Promise<StegoModule> {
  * @returns Promise<Blob>
  */
 export async function encodeTextPng(
-  input: File | Buffer | string,
+  input: File | string,
   message: string,
   header?: string,
 ): Promise<Blob> {
@@ -95,7 +95,7 @@ export async function encodeTextPng(
  * @returns Promise<Blob>
  */
 export async function encodeTextJpeg(
-  input: File | Buffer | string,
+  input: File | string,
   message: string,
   header?: string,
 ): Promise<Blob> {
@@ -161,7 +161,7 @@ export async function encodeTextJpeg(
  * @returns Promise<string>
  */
 export async function decodeTextPng(
-  input: File | Buffer | string,
+  input: File | string,
   header?: string,
 ): Promise<string> {
   const mod = await getModule();
@@ -205,7 +205,7 @@ export async function decodeTextPng(
  * @returns Promise<string>
  */
 export async function decodeTextJpeg(
-  input: File | Buffer | string,
+  input: File | string,
   header?: string,
 ): Promise<string> {
   const mod = await getModule();
