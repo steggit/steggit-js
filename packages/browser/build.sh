@@ -1,10 +1,10 @@
-mkdir -p dist
+mkdir -p build
 emcc \
   ../core/src/main.c \
   ../core/src/general_utils.c \
   ../core/src/jpeg_utils.c \
   ../core/src/png_utils.c \
-  -o dist/steggit_emcc.js \
+  -o build/steggit_emcc.js \
   -I ../core/include \
   -s USE_LIBPNG=1 \
   -s USE_LIBJPEG=1 \

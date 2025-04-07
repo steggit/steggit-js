@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line import/extensions
-import ModuleFactory, { type StegoModule } from 'dist/steggit_emcc.js';
+import ModuleFactory, { type StegoModule } from 'build/steggit_emcc.js';
 import {
   allocateMemory,
   freeMemory,

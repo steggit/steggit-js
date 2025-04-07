@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line import/extensions
-import { StegoModule } from 'dist/steggit_emcc.js';
+import { StegoModule } from 'build/steggit_emcc.js';
 
 interface Memory {
   input: number | null;
