@@ -241,7 +241,7 @@ export async function decodeTextJpeg(
   return output;
 }
 
-export async function createStegoApi() {
+export async function loadSteggitModule() {
   const mod = await getModule();
   return {
     encodeTextPng: mod.cwrap('encode_png', 'number', [
