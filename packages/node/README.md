@@ -1,4 +1,4 @@
-# @steggit/node
+# @steggit-js/node
 
 Node.js native addon for image steganography, providing high-performance encoding and decoding of text messages within PNG and JPEG images. This package uses the core C implementation through Node.js native addons.
 
@@ -15,9 +15,9 @@ Node.js native addon for image steganography, providing high-performance encodin
 ## Installation
 
 ```bash
-npm install @steggit/node
+npm install @steggit-js/node
 # or
-yarn add @steggit/node
+yarn add @steggit-js/node
 ```
 
 ### Prerequisites
@@ -33,7 +33,7 @@ yarn add @steggit/node
 ### Basic Usage
 
 ```javascript
-import { encodeTextPng, decodeTextPng } from '@steggit/node';
+import { encodeTextPng, decodeTextPng } from '@steggit-js/node';
 
 // Encoding a message into an image
 async function encodeMessage() {
@@ -63,7 +63,7 @@ async function decodeMessage() {
 ### Advanced Usage with Custom Headers
 
 ```javascript
-import { encodeTextJpeg, decodeTextJpeg } from '@steggit/node';
+import { encodeTextJpeg, decodeTextJpeg } from '@steggit-js/node';
 
 async function encodeWithHeader() {
   try {

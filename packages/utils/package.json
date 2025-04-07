@@ -1,5 +1,5 @@
 {
-  "name": "@steggit/utils",
+  "name": "@steggit-js/utils",
   "description": "Utils for Steggit",
   "scripts": {
     "test": "jest",

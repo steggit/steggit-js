@@ -1,5 +1,5 @@
 {
-  "name": "@steggit/browser",
+  "name": "@steggit-js/browser",
   "version": "0.1.0",
   "description": "Browser bindings for core module",
   "main": "./dist/index.js",

@@ -1,4 +1,4 @@
-# @steggit/core
+# @steggit-js/core
 
 Core C implementation of Steggit's steganography functionality. This package provides the fundamental steganography operations that power both the browser and Node.js implementations. It can also be used as a standalone C module.
 
@@ -80,8 +80,8 @@ make
 ### Integration with Other Packages
 
 This core module is used by:
-- `@steggit/browser`: Browser implementation using WebAssembly
-- `@steggit/node`: Node.js native addon implementation
+- `@steggit-js/browser`: Browser implementation using WebAssembly
+- `@steggit-js/node`: Node.js native addon implementation
 
 ## API Reference
 

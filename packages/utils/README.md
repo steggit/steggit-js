@@ -1,4 +1,4 @@
-# @steggit/utils
+# @steggit-js/utils
 
 A utility package for Steggit that provides encryption and string manipulation tools for steganography operations.
 
@@ -19,9 +19,9 @@ A utility package for Steggit that provides encryption and string manipulation t
 ## Installation
 
 ```bash
-npm install @steggit/utils
+npm install @steggit-js/utils
 # or
-yarn add @steggit/utils
+yarn add @steggit-js/utils
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ import {
   decryptMessage,
   parseEncryptedMessage,
   stringifyEncryptedMessage
-} from '@steggit/utils';
+} from '@steggit-js/utils';
 
 // Generate an encryption key
 const key = await generateEncryptionKey();
@@ -63,7 +63,7 @@ import {
   deobfuscateString,
   binaryToInvisible,
   invisibleToBinary
-} from '@steggit/utils';
+} from '@steggit-js/utils';
 
 // Convert string to binary
 const binary = stringToBinary('hello');

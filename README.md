@@ -6,10 +6,10 @@ A monorepo containing the JavaScript implementation of Steggit, a steganography 
 
 This monorepo contains multiple packages that work together to provide steganography functionality across different JavaScript environments:
 
-- `@steggit/core`: Core image steganography functionality
-- `@steggit/browser`: Browser-specific implementation
-- `@steggit/node`: Node.js-specific implementation
-- `@steggit/utils`: Shared utilities including encryption tools and string steganography
+- `@steggit-js/core`: Core image steganography functionality
+- `@steggit-js/browser`: Browser-specific implementation
+- `@steggit-js/node`: Node.js-specific implementation
+- `@steggit-js/utils`: Shared utilities including encryption tools and string steganography
 
 ## Getting Started
 

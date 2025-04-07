@@ -2003,9 +2003,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@steggit/browser@workspace:packages/browser":
+"@steggit-js/browser@workspace:packages/browser":
   version: 0.0.0-use.local
-  resolution: "@steggit/browser@workspace:packages/browser"
+  resolution: "@steggit-js/browser@workspace:packages/browser"
   dependencies:
     "@types/node": "npm:^22.13.11"
     babel-plugin-jest-hoist: "npm:^29.6.3"
@@ -2018,15 +2018,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@steggit/core@workspace:packages/core":
+"@steggit-js/core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@steggit/core@workspace:packages/core"
+  resolution: "@steggit-js/core@workspace:packages/core"
   languageName: unknown
   linkType: soft
 
-"@steggit/node@workspace:packages/node":
+"@steggit-js/node@workspace:packages/node":
   version: 0.0.0-use.local
-  resolution: "@steggit/node@workspace:packages/node"
+  resolution: "@steggit-js/node@workspace:packages/node"
   dependencies:
     jest: "npm:^29.7.0"
     jest-esbuild: "npm:^0.3.0"
@@ -2037,9 +2037,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@steggit/utils@workspace:packages/utils":
+"@steggit-js/utils@workspace:packages/utils":
   version: 0.0.0-use.local
-  resolution: "@steggit/utils@workspace:packages/utils"
+  resolution: "@steggit-js/utils@workspace:packages/utils"
   dependencies:
     babel-plugin-jest-hoist: "npm:^29.6.3"
     jest: "npm:^29.7.0"

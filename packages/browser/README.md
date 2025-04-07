@@ -1,4 +1,4 @@
-# @steggit/browser
+# @steggit-js/browser
 
 Browser-specific implementation of Steggit, providing steganography functionality for web applications. This package allows you to encode and decode text messages within PNG and JPEG images directly in the browser.
 
@@ -15,9 +15,9 @@ Browser-specific implementation of Steggit, providing steganography functionalit
 ## Installation
 
 ```bash
-npm install @steggit/browser
+npm install @steggit-js/browser
 # or
-yarn add @steggit/browser
+yarn add @steggit-js/browser
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ yarn add @steggit/browser
 ### Basic Usage
 
 ```typescript
-import { encodeTextPng, decodeTextPng } from '@steggit/browser';
+import { encodeTextPng, decodeTextPng } from '@steggit-js/browser';
 
 // Encoding a message into an image
 async function encodeMessage() {
@@ -60,7 +60,7 @@ async function decodeMessage() {
 ### Advanced Usage with Custom Headers
 
 ```typescript
-import { encodeTextJpeg, decodeTextJpeg } from '@steggit/browser';
+import { encodeTextJpeg, decodeTextJpeg } from '@steggit-js/browser';
 
 async function encodeWithHeader() {
   const imageFile = document.querySelector('input[type="file"]').files[0];
