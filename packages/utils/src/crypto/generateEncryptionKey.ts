@@ -1,14 +1,19 @@
 import { createHmac } from 'node:crypto';
 import { DEFAULT_KEY_LENGTH } from './const';
 
-export default function generateEncryptionKey(
-  input: string,
-  secret: string,
+interface GenerateEncryptionKeyOptions {
+  secret: string;
+  length?: number;
+  ctx?: string;
+}
+
+export default function generateEncryptionKey({
+  secret,
   length = DEFAULT_KEY_LENGTH,
   ctx = 'default',
-) {
+}: GenerateEncryptionKeyOptions) {
   const pseudoRandomKey = createHmac('sha256', secret)
-    .update(input)
+    .update(ctx)
     .digest() as Buffer<ArrayBuffer>;
 
   let previousBlock = Buffer.alloc(0);

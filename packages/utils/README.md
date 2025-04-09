@@ -38,7 +38,7 @@ import {
 } from '@steggit-js/utils';
 
 // Generate an encryption key
-const key = await generateEncryptionKey();
+const key = await generateEncryptionKey({ secret, ctx, length });
 
 // Encrypt a message
 const encrypted = await encryptMessage('secret message', key);

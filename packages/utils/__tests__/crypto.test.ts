@@ -11,19 +11,19 @@ const mockSecret = '0987654321';
 
 describe(generateEncryptionKey.name, () => {
   it('should return an encryption key', () => {
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     expect(key.length).toBe(DEFAULT_KEY_LENGTH * 2);
   });
 
   it('should return the same key with the same input', () => {
-    const key1 = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
-    const key2 = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key1 = generateEncryptionKey({ secret: mockSecret });
+    const key2 = generateEncryptionKey({ secret: mockSecret });
     expect(key1).toBe(key2);
   });
 
   it('should return a different key with different input', () => {
-    const key1 = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
-    const key2 = generateEncryptionKey('test2', mockSecret, DEFAULT_KEY_LENGTH);
+    const key1 = generateEncryptionKey({ secret: mockSecret });
+    const key2 = generateEncryptionKey({ secret: 'differentsecret' });
     expect(key1).not.toBe(key2);
   });
 });
@@ -31,13 +31,13 @@ describe(generateEncryptionKey.name, () => {
 describe(encryptMessage.name, () => {
   it('should throw if key is too short', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, 16);
+    const key = generateEncryptionKey({ secret: mockSecret, length: 16 });
     expect(() => encryptMessage(message, key)).toThrow('Invalid key length');
   });
 
   it('should encrypt a message', () => {
     const message = 'testtesttest';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted = encryptMessage(message, key);
     expect(encrypted).toBeDefined();
     expect(encrypted.iv.length).toBe(24);
@@ -48,7 +48,7 @@ describe(encryptMessage.name, () => {
 
   it('the same message should be encrypted differently each time', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted1 = encryptMessage(message, key);
     const encrypted2 = encryptMessage(message, key);
     expect(encrypted1).not.toBe(encrypted2);
@@ -58,13 +58,9 @@ describe(encryptMessage.name, () => {
 describe(decryptMessage.name, () => {
   it('should throw an error if key is incorrect', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted = encryptMessage(message, key);
-    const wrongKey = generateEncryptionKey(
-      'wrong',
-      mockSecret,
-      DEFAULT_KEY_LENGTH,
-    );
+    const wrongKey = generateEncryptionKey({ secret: 'wrongsecret' });
     expect(() => decryptMessage(encrypted, wrongKey)).toThrow(
       'Unsupported state or unable to authenticate data',
     );
@@ -72,7 +68,7 @@ describe(decryptMessage.name, () => {
 
   it('should decrypt a message', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted = encryptMessage(message, key);
     const decrypted = decryptMessage(encrypted, key);
     expect(decrypted).toBe(message);
@@ -81,7 +77,7 @@ describe(decryptMessage.name, () => {
 
   it('the same message should be decrypted the same each time', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted1 = encryptMessage(message, key);
     const encrypted2 = encryptMessage(message, key);
     const decrypted1 = decryptMessage(encrypted1, key);
@@ -94,7 +90,7 @@ describe(decryptMessage.name, () => {
 describe(stringifyEncryptedMessage.name, () => {
   it('should stringify an encrypted message', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted = encryptMessage(message, key);
     const stringified = stringifyEncryptedMessage(encrypted);
     expect(stringified).toBe(
@@ -106,7 +102,7 @@ describe(stringifyEncryptedMessage.name, () => {
 describe(parseEncryptedMessage.name, () => {
   it('should parse an encrypted message', () => {
     const message = 'test';
-    const key = generateEncryptionKey('test', mockSecret, DEFAULT_KEY_LENGTH);
+    const key = generateEncryptionKey({ secret: mockSecret });
     const encrypted = encryptMessage(message, key);
     const stringified = stringifyEncryptedMessage(encrypted);
     const parsed = parseEncryptedMessage(stringified);
