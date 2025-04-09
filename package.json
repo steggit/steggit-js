@@ -31,6 +31,16 @@
     "url": "https://github.com/steggit/steggit-js/issues"
   },
   "homepage": "https://github.com/steggit/steggit-js",
+  "keywords": [
+    "steggit",
+    "steggit-js",
+    "steganography",
+    "encryption",
+    "messaging",
+    "image",
+    "hidden",
+    "wasm"
+  ],
   "workspaces": {
     "packages": [
       "packages/*"
