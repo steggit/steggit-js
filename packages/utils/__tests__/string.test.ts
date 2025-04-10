@@ -91,6 +91,8 @@ describe(zipStrings.name, () => {
   it('should zip two strings', () => {
     const zipped = zipStrings('parent', 'child');
     expect(zipped).toEqual('pcahrielndt');
+    const zipped2 = zipStrings('aaaa', 'bbbbbbbb');
+    expect(zipped2).toEqual('abbabbabbabb');
   });
 });
 
