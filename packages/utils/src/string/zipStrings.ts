@@ -1,45 +1,39 @@
-export default function zipStrings(
-  stringOne: string,
-  stringTwo: string,
-  maxChunkSize: number,
-) {
-  if (maxChunkSize <= 0) {
-    throw new Error('maxChunkSize must be greater than 0');
+export default function zipStrings(stringOne: string, stringTwo: string) {
+  if (!stringOne) {
+    throw new Error('Parent string is required');
+  }
+  if (!stringTwo) {
+    throw new Error('Child string is required');
   }
 
+  // Calculate the greatest common divisor to help find optimal chunk sizes
+  const gcd = (a: number, b: number): number => {
+    return b === 0 ? a : gcd(b, a % b);
+  };
+
+  const len1 = stringOne.length;
+  const len2 = stringTwo.length;
+
+  // Find the GCD of the two lengths to determine optimal chunk sizes
+  const divisor = gcd(len1, len2);
+
+  // Calculate chunk sizes based on the GCD to ensure even distribution
+  const chunkSize1 = Math.max(1, Math.floor(len1 / (len1 / divisor)));
+  const chunkSize2 = Math.max(1, Math.floor(len2 / (len2 / divisor)));
+
   let result = '';
-  let indexOne = 0;
-  let indexTwo = 0;
+  let i = 0;
+  let j = 0;
 
-  while (indexOne < stringOne.length || indexTwo < stringTwo.length) {
-    // Determine if we should take from stringOne or stringTwo next
-    // If one string is exhausted, we'll take from the other
-    const takeFromOne =
-      indexTwo >= stringTwo.length ||
-      (indexOne < stringOne.length && Math.random() < 0.5);
+  while (i < len1 || j < len2) {
+    if (i < len1) {
+      result += stringOne.substring(i, i + chunkSize1);
+      i += chunkSize1;
+    }
 
-    if (takeFromOne) {
-      // Determine random chunk size between 1 and maxChunkSize
-      const remainingChars = stringOne.length - indexOne;
-      const chunkSize = Math.min(
-        remainingChars,
-        1 + Math.floor(Math.random() * maxChunkSize),
-      );
-
-      // Add chunk from stringOne to result
-      result += stringOne.substring(indexOne, indexOne + chunkSize);
-      indexOne += chunkSize;
-    } else {
-      // Determine random chunk size between 1 and maxChunkSize
-      const remainingChars = stringTwo.length - indexTwo;
-      const chunkSize = Math.min(
-        remainingChars,
-        1 + Math.floor(Math.random() * maxChunkSize),
-      );
-
-      // Add chunk from stringTwo to result
-      result += stringTwo.substring(indexTwo, indexTwo + chunkSize);
-      indexTwo += chunkSize;
+    if (j < len2) {
+      result += stringTwo.substring(j, j + chunkSize2);
+      j += chunkSize2;
     }
   }
 

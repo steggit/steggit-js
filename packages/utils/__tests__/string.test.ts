@@ -82,13 +82,15 @@ describe(deobfuscateString.name, () => {
 });
 
 describe(zipStrings.name, () => {
-  it('should throw an error if the max chunk size is not greater than 0', () => {
-    expect(() => zipStrings('hello', 'world', 0)).toThrow();
+  it('should throw an error if the parent string is missing', () => {
+    expect(() => zipStrings('', 'child')).toThrow();
+  });
+  it('should throw an error if the child string is missing', () => {
+    expect(() => zipStrings('parent', '')).toThrow();
   });
   it('should zip two strings', () => {
-    const zipped = zipStrings('hello', 'world', 2);
-    expect(zipped).not.toEqual('helloworld');
-    expect(zipped.length).toEqual(10);
+    const zipped = zipStrings('parent', 'child');
+    expect(zipped).toEqual('pcahrielndt');
   });
 });
 
