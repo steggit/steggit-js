@@ -52,7 +52,7 @@
   "bugs": {
     "url": "https://github.com/steggit/steggit-js/issues"
   },
-  "homepage": "https://github.com/steggit/steggit-js/tree/main/packages/node",
+  "homepage": "https://stegg.it",
   "keywords": [
     "steggit",
     "steggit-js",
