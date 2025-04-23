@@ -1,6 +1,6 @@
 {
   "name": "@steggit-js/browser",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Browser bindings for core Steggit module",
   "types": "./dist/lib/index.d.ts",
   "main": "./dist/lib/index.js",
