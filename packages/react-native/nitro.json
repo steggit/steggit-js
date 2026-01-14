@@ -1,0 +1,23 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": [
+    "steggit"
+  ],
+  "ios": {
+    "iosModuleName": "NitroSteggit"
+  },
+  "android": {
+    "androidNamespace": [
+      "steggit"
+    ],
+    "androidCxxLibName": "NitroSteggit"
+  },
+  "autolinking": {
+    "Steggit": {
+      "cpp": "HybridSteggit"
+    }
+  },
+  "ignorePaths": [
+    "**/node_modules"
+  ]
+}
