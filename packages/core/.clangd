@@ -1,2 +1,6 @@
 CompileFlags:
   CompilationDatabase: build
+  Add:
+    - "-I/opt/homebrew/opt/jpeg-turbo/include"
+    - "-I/opt/homebrew/opt/libpng/include"
+    - "-I/opt/homebrew/include/node"

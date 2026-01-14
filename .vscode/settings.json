@@ -42,5 +42,6 @@
   "git.enableSmartCommit": true,
   "git.replaceTagsWhenPull": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs"
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
+  "cmake.sourceDirectory": "/Users/james/Github/Steggit/steggit-js/packages/core"
 }
