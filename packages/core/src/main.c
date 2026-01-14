@@ -4,6 +4,7 @@
 #include "general_utils.h"
 #include "jpeg_utils.h"
 #include "png_utils.h"
+#include "steggit.h"
 #include "types.h"
 #include <stdlib.h>
 #include <string.h>
